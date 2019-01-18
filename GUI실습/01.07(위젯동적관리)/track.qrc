@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="track">
+    <file>res/beta(48x50).png</file>
+    <file>res/beta_end(48x50).png</file>
+    <file>res/sub_beta(20x20).png</file>
+    <file>res/add_beta(20x20).png</file>
+  </qresource>
+</RCC>

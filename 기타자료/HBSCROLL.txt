@@ -1,0 +1,2 @@
+- HBSCROLL을 START앞에 썼을때 BPM만으로 특정 노트의 순간 변화를 줄 수 있음.
+https/www.youtube.com/watch?v=zRErczkvGdA

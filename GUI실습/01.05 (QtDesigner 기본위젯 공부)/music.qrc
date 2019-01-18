@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="music">
+    <file>res/일시정지.PNG</file>
+    <file>res/재생.PNG</file>
+    <file>res/정지.PNG</file>
+  </qresource>
+</RCC>
