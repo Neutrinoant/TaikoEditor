@@ -10,7 +10,7 @@ def delcomment(s):
         if i=='':
             continue
         else:
-            newstr.append(re.sub('(.*)//(.*)','',i))
+            newstr.append(re.sub('//(.*)','',i))
     return newstr
 
 
@@ -128,20 +128,21 @@ def makeTrack(TJA):
     return T
 
 def makeBarList(bar,defaultBPM,Balloonlist):
+    # print(bar)
     #이 함수는 bar의 list를 만든다. 
     res=list()
     SCROLL=1.0
     BalloonIdx=0
     BPM=defaultBPM
-    GOGOSTART=False
-    GOGOEND=False
+    GOGO=False
     MEASURE=[4,4]
     for line in bar:
-        if line[0]=='#'
+        # print(line)
+        if line[0]=='#':
             if line=='#GOGOSTART':
-                GOGOSTART=True
+                GOGO=True
             if line=='#GOGOEND':
-                GOGOEND=True
+                GOGO=False
             s=re.match('#SCROLL (.*)',line)
             if s!=None:
                 SCROLL=float(s.group(1))
@@ -158,8 +159,13 @@ def makeBarList(bar,defaultBPM,Balloonlist):
         else:
             for note in line:
                 if note==',':
-                    B=Score.Bar()
+                    B=Score.Bar(MEASURE)
                 elif note=='7':
+                    N=Score.Note(BPM,note,SCROLL,Balloonlist[BalloonIdx],GOGO)
+                    BalloonIdx=BalloonIdx+1
+                    pass
+                else:
+                    N=Score.Note(BPM,note,SCROLL,None,GOGO)
                     pass
         
 
