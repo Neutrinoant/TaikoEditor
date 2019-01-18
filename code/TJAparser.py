@@ -7,16 +7,19 @@ import sys
 def delcomment(s):
     newstr=list()
     for i in s:
-        newstr.append(re.sub('(.*)//(.*)','',i))
+        if i=='':
+            continue
+        else:
+            newstr.append(re.sub('(.*)//(.*)','',i))
     return newstr
 
 
 
 def makeTrack(TJA):
     l=len(TJA)
+    
     T=Score.TJA()
-    Tr=Score.Track()
-    T.Track_list.append(Tr)
+    T.Track_list.append(Score.Track())
     CurTrIdx=0
     CurBalloonlist=None
     flag=False
@@ -110,7 +113,7 @@ def makeTrack(TJA):
         else:
             if TJA[line]=='#END':
                 flag=False
-                b=makeBarList(bar)
+                b=makeBarList(bar,T.BPM,CurBalloonlist)
                 bar=list()
                 if line<l-1:
                     #END가 나오고 더 나오는게 있다면 일단 하나 더 만들기    
@@ -121,28 +124,50 @@ def makeTrack(TJA):
         
         
     T.print()
+    
     return T
 
-def makeBarList(bar):
+def makeBarList(bar,defaultBPM,Balloonlist):
     #이 함수는 bar의 list를 만든다. 
     res=list()
+    SCROLL=1.0
+    BalloonIdx=0
+    BPM=defaultBPM
+    GOGOSTART=False
+    GOGOEND=False
+    MEASURE=[4,4]
     for line in bar:
-        if line=='#GOGOSTART':
-            continue
-        if line=='#GOGOEND':
-            continue
-        s=re.match('#SCROLL(.*)',line)
-        if s!=None:
-            print(s.group(1))
-            
-        
+        if line[0]=='#'
+            if line=='#GOGOSTART':
+                GOGOSTART=True
+            if line=='#GOGOEND':
+                GOGOEND=True
+            s=re.match('#SCROLL (.*)',line)
+            if s!=None:
+                SCROLL=float(s.group(1))
+                continue
+            s=re.match('#BPMCHANGE (.*)',line)
+            if s!=None:
+                BPM=float(s.group(1))
+                continue
+            s=re.match("#MEASURE (.*)/(.*)",line)
+            if s!=None:
+                MEASURE[0]=int(s.group(1))
+                MEASURE[1]=int(s.group(2))
+                continue
+        else:
+            for note in line:
+                if note==',':
+                    B=Score.Bar()
+                elif note=='7':
+                    pass
         
 
-    
+
     return res
 
 if __name__ == "__main__":
-    with codecs.open("ドンカマ2000.tja", "r",encoding='shift-jis', errors='ignore') as f:
+    with codecs.open("../TJAfile/ドンカマ2000.tja", "r",encoding='shift-jis', errors='ignore') as f:
         dat=f.read()
         s=dat.splitlines()
         # print(s)

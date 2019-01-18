@@ -1,12 +1,3 @@
-
-class Note:
-    def __init__(self,noteparam=0):
-        self.NoteParam=0 #0=쉼표 1=동 2=캇 3:큰동 4:큰캇 5:단무지
-        self.BPMChange=0
-        self.ScrollChange=0
-        self.GOGOStart=1 #1은 시작, 2는 끝
-        self.Balloon=0 # 풍선 갯수
-
 class Bar:
     def __init__(self,measure):
         self.measure=measure
@@ -22,6 +13,16 @@ class Beats:
         if curNoteIdx>=self.splitParam:
             print("노트 넘침")
         Notelist[curNoteIdx]=Note(noteparam)
+
+class Note:
+    def __init__(self,BPM,noteparam=0,Scroll=1.0,Balloon=None,GOGO=False):
+        self.NoteParam=noteparam #0=쉼표 1=동 2=캇 3:큰동 4:큰캇 5:단무지
+        self.BPM=BPM
+        self.Scroll=Scroll
+        self.GOGOStart=GOGO #True는 고고중 False는 아님
+        self.Balloon=Balloon # 풍선 갯수
+
+
 
 
 
