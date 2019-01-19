@@ -1,18 +1,34 @@
+import copy
+
 class Bar:
     def __init__(self,measure):
         self.measure=measure
-        self.Beat_list=[Beats()]*measure[1]
+        self.Beat_list=list()
+    def setNoteList(self,RawNoteList):
+        #10110101 같은게 들어온다. 8칸이고 메져가 4/4 면 2칸씩 나눈다. 
+        l=len(RawNoteList)/self.measure[0]
+        cnt=0
+        self.Beat_list.append(Beats(l))
+        BeatListIdx=0
+        for note in RawNoteList:
+            if cnt>=l:
+                BeatListIdx=BeatListIdx+1
+                self.Beat_list.append(Beats(l))
+                cnt=0
+            self.Beat_list[BeatListIdx].pushNote(note)
+            cnt=cnt+1
+
+
 
 class Beats:
     def __init__(self,split=4):
         self.splitParam=split # 한 박자를 몇개로 쪼갤것인가
         self.Notelist=[Note(0)]*split
         self.curNoteIdx=0
-    def pushNote(self,noteParam):
-        self.curNoteIdx=self.curNoteIdx+1
-        if curNoteIdx>=self.splitParam:
-            print("노트 넘침")
-        Notelist[curNoteIdx]=Note(noteparam)
+    def pushNote(self,Note):
+        self.NoteList[self.curNoteIdx].setNote(Note)
+        curNoteIdx=curNoteIdx+1
+
 
 class Note:
     def __init__(self,BPM,noteparam=0,Scroll=1.0,Balloon=None,GOGO=False):
@@ -21,6 +37,13 @@ class Note:
         self.Scroll=Scroll
         self.GOGOStart=GOGO #True는 고고중 False는 아님
         self.Balloon=Balloon # 풍선 갯수
+    def setNote(self,Note):
+        self.NoteParam=copy.deepcopy(Note.NoteParam)
+        self.BPM=copy.deepcopy(Note.BPM)
+        self.Scroll=copy.deepcopy(Note.Scroll)
+        self.GOGOStart=copy.deepcopy(Note.GOGO)
+        self.Balloon=copy.deepcopy(Note.Balloon)
+
 
 
 

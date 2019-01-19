@@ -131,11 +131,13 @@ def makeBarList(bar,defaultBPM,Balloonlist):
     # print(bar)
     #이 함수는 bar의 list를 만든다. 
     res=list()
+    curIdx=0
     SCROLL=1.0
     BalloonIdx=0
     BPM=defaultBPM
     GOGO=False
     MEASURE=[4,4]
+    TempList=list()
     for line in bar:
         # print(line)
         if line[0]=='#':
@@ -159,14 +161,15 @@ def makeBarList(bar,defaultBPM,Balloonlist):
         else:
             for note in line:
                 if note==',':
-                    B=Score.Bar(MEASURE)
+                    res.append(Score.Bar(MEASURE))
+                    res[curIdx].setNoteList(TempList)
+                    curIdx=curIdx+1
                 elif note=='7':
-                    N=Score.Note(BPM,note,SCROLL,Balloonlist[BalloonIdx],GOGO)
+                    TempList.append(Score.Note(BPM,note,SCROLL,Balloonlist[BalloonIdx],GOGO))
                     BalloonIdx=BalloonIdx+1
-                    pass
+
                 else:
-                    N=Score.Note(BPM,note,SCROLL,None,GOGO)
-                    pass
+                    TempList.append(Score.Note(BPM,note,SCROLL,None,GOGO))
         
 
 
