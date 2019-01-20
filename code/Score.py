@@ -3,39 +3,40 @@ import copy
 class Bar:
     def __init__(self,measure):
         self.measure=measure
-        self.Beat_list=list()
+        self.Beat_list=[Beat()]
     def setNoteList(self,RawNoteList):
         #10110101 같은게 들어온다. 8칸이고 메져가 4/4 면 2칸씩 나눈다. 
         l=len(RawNoteList)/self.measure[0]
         cnt=0
-        self.Beat_list.append(Beats(l))
-        BeatListIdx=0
+        B=Beat(l)
         for note in RawNoteList:
-            if cnt>=l:
-                BeatListIdx=BeatListIdx+1
-                self.Beat_list.append(Beats(l))
-                cnt=0
-            self.Beat_list[BeatListIdx].pushNote(note)
+            B.pushNote(note)
             cnt=cnt+1
+            if cnt>=l:
+                self.Beat_list.append(B)
+                cnt=0
+                B=Beat(l)
 
 
 
-class Beats:
+class Beat:
     def __init__(self,split=4):
-        self.splitParam=split # 한 박자를 몇개로 쪼갤것인가
-        self.Notelist=[Note(0)]*split
-        self.curNoteIdx=0
-    def pushNote(self,Note):
-        self.NoteList[self.curNoteIdx].setNote(Note)
-        curNoteIdx=curNoteIdx+1
+        self.Note_List=list()
+        self.splitParam=int(split) # 한 박자를 몇개로 쪼갤것인가
+    def pushNote(self,note):
+        if len(self.Note_List)>self.splitParam:
+            print("오류:노트넘침")
+        N=Note()
+        N.setNote(note)
+        self.Note_List.append(N)
 
 
 class Note:
-    def __init__(self,BPM,noteparam=0,Scroll=1.0,Balloon=None,GOGO=False):
+    def __init__(self,BPM=0,noteparam=0,Scroll=1.0,Balloon=None,GOGO=False):
         self.NoteParam=noteparam #0=쉼표 1=동 2=캇 3:큰동 4:큰캇 5:단무지
         self.BPM=BPM
         self.Scroll=Scroll
-        self.GOGOStart=GOGO #True는 고고중 False는 아님
+        self.GOGO=GOGO #True는 고고중 False는 아님
         self.Balloon=Balloon # 풍선 갯수
     def setNote(self,Note):
         self.NoteParam=copy.deepcopy(Note.NoteParam)
@@ -43,6 +44,8 @@ class Note:
         self.Scroll=copy.deepcopy(Note.Scroll)
         self.GOGOStart=copy.deepcopy(Note.GOGO)
         self.Balloon=copy.deepcopy(Note.Balloon)
+    def __repr__(self):
+        return self.NoteParam
 
 
 

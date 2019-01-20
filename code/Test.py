@@ -7,7 +7,7 @@ class tst:
     def setlistDeep(self,t):
         self.t=copy.deepcopy(t)
     def print(self):
-        print(t)
+        print(self.t)
 
 
 t=[1,2,3]
