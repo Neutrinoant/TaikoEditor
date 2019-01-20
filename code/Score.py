@@ -2,20 +2,38 @@ import copy
 
 class Bar:
     def __init__(self,measure):
-        self.measure=measure
-        self.Beat_list=[Beat()]
+        self.measure=copy.deepcopy(measure)
+        self.Beat_list=[Beat() for _ in range(measure[0])]
     def setNoteList(self,RawNoteList):
-        #10110101 같은게 들어온다. 8칸이고 메져가 4/4 면 2칸씩 나눈다. 
+        #10110101 같은게 들어온다. 8칸이고 메져가 4/4 면 2칸씩 나눈다.
+        # print(RawNoteList) 
         l=len(RawNoteList)/self.measure[0]
+        # print(l)
+        if l<1:
+            l=1
+            #1->1000으로 바꿔주는 과정이 필요. 우선 전체 길이를 1/l 배 만큼 늘려야한다.
+            #기본적으로 한개 들어간다고 생각하고, 0인 노트를 1/l-1 개 만큼 복사해서 넣어준다고 생각하자. 
+            NewRawNoteList=list()
+            for n in RawNoteList:
+                NewRawNoteList.append(n)
+                for _ in range(int(1/l)-1):
+                    N=Note()
+                    N.setNote(n)
+                    N.setZero()
+                    NewRawNoteList.append(N)
+            RawNoteList=NewRawNoteList
+        idxoffset=1
         cnt=0
-        B=Beat(l)
+        BeatListIdx=0
+        for B in self.Beat_list:
+            B.setSplit(l)
         for note in RawNoteList:
-            B.pushNote(note)
+            # print(BeatListIdx)
+            self.Beat_list[BeatListIdx].pushNote(note)
             cnt=cnt+1
             if cnt>=l:
-                self.Beat_list.append(B)
+                BeatListIdx=BeatListIdx+idxoffset
                 cnt=0
-                B=Beat(l)
 
 
 
@@ -23,9 +41,13 @@ class Beat:
     def __init__(self,split=4):
         self.Note_List=list()
         self.splitParam=int(split) # 한 박자를 몇개로 쪼갤것인가
+    def setSplit(self,split):
+        self.splitParam=split
     def pushNote(self,note):
-        if len(self.Note_List)>self.splitParam:
+        if len(self.Note_List)==self.splitParam:
             print("오류:노트넘침")
+            print(self.splitParam)
+            quit()
         N=Note()
         N.setNote(note)
         self.Note_List.append(N)
@@ -44,6 +66,8 @@ class Note:
         self.Scroll=copy.deepcopy(Note.Scroll)
         self.GOGOStart=copy.deepcopy(Note.GOGO)
         self.Balloon=copy.deepcopy(Note.Balloon)
+    def setZero(self):
+        self.NoteParam=0
     def __repr__(self):
         return self.NoteParam
 

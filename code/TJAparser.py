@@ -161,6 +161,8 @@ def makeBarList(bar,defaultBPM,Balloonlist):
         else:
             for note in line:
                 if note==',':
+                    if len(TempList)==0:
+                        TempList.append(Score.Note(BPM,0,SCROLL,None,GOGO))
                     res.append(Score.Bar(MEASURE))
                     res[curIdx].setNoteList(TempList)
                     curIdx=curIdx+1
@@ -176,7 +178,7 @@ def makeBarList(bar,defaultBPM,Balloonlist):
     return res
 
 if __name__ == "__main__":
-    with codecs.open("../TJAfile/Tulip.tja", "r",encoding='shift-jis', errors='ignore') as f:
+    with codecs.open("../TJAfile/ドンカマ2000.tja", "r",encoding='shift-jis', errors='ignore') as f:
         dat=f.read()
         s=dat.splitlines()
         # print(s)
