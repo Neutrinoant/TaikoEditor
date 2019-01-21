@@ -3,40 +3,40 @@ import copy
 class Bar:
     def __init__(self,measure):
         self.measure=copy.deepcopy(measure)
-        self.Beat_list=[Beat() for _ in range(measure[0])]
-    def setNoteList(self,RawNoteList):
+        self.beat_list=[Beat() for _ in range(measure[0])]
+    def setNoteList(self,rawNoteList):
         #10110101 같은게 들어온다. 8칸이고 메져가 4/4 면 2칸씩 나눈다.
-        # print(RawNoteList) 
-        l=len(RawNoteList)/self.measure[0]
+        # print(rawNoteList) 
+        l=len(rawNoteList)/self.measure[0]
         # print(l)
         if l<1:
             l=1
             #1->1000으로 바꿔주는 과정이 필요. 우선 전체 길이를 1/l 배 만큼 늘려야한다.
             #기본적으로 한개 들어간다고 생각하고, 0인 노트를 1/l-1 개 만큼 복사해서 넣어준다고 생각하자. 
-            NewRawNoteList=list()
-            for n in RawNoteList:
-                NewRawNoteList.append(n)
+            newRawNoteList=list()
+            for n in rawNoteList:
+                newRawNoteList.append(n)
                 for _ in range(int(1/l)-1):
                     N=Note()
                     N.setNote(n)
                     N.setZero()
-                    NewRawNoteList.append(N)
-            RawNoteList=NewRawNoteList
-        idxoffset=1
+                    newRawNoteList.append(N)
+            rawNoteList=newRawNoteList
+        idxOffset=1
         cnt=0
-        BeatListIdx=0
-        for B in self.Beat_list:
+        beatListIdx=0
+        for B in self.beat_list:
             B.setSplit(l)
-        for note in RawNoteList:
-            # print(BeatListIdx)
-            self.Beat_list[BeatListIdx].pushNote(note)
+        for note in rawNoteList:
+            # print(beatListIdx)
+            self.beat_list[beatListIdx].pushNote(note)
             cnt=cnt+1
             if cnt>=l:
-                BeatListIdx=BeatListIdx+idxoffset
+                beatListIdx=beatListIdx+idxOffset
                 cnt=0
     def __repr__(self):
         s=str()
-        for b in self.Beat_list:
+        for b in self.beat_list:
             s=s+str(b)+" "
         return s
 
@@ -44,42 +44,42 @@ class Bar:
 
 class Beat:
     def __init__(self,split=4):
-        self.Note_List=list()
+        self.note_list=list()
         self.splitParam=int(split) # 한 박자를 몇개로 쪼갤것인가
     def setSplit(self,split):
         self.splitParam=split
     def pushNote(self,note):
-        if len(self.Note_List)==self.splitParam:
+        if len(self.note_list)==self.splitParam:
             print("오류:노트넘침")
             print(self.splitParam)
             quit()
         N=Note()
         N.setNote(note)
-        self.Note_List.append(N)
+        self.note_list.append(N)
     def __repr__(self):
         s=str()
-        for note in self.Note_List:
+        for note in self.note_list:
             s=s+str(note)
         return s
 
 
 class Note:
-    def __init__(self,BPM=0,noteparam=0,Scroll=1.0,Balloon=None,GOGO=False):
-        self.NoteParam=noteparam #0=쉼표 1=동 2=캇 3:큰동 4:큰캇 5:단무지
+    def __init__(self,BPM=0,noteParam=0,scroll=1.0,balloon=None,GOGO=False):
+        self.noteParam=noteParam #0=쉼표 1=동 2=캇 3:큰동 4:큰캇 5:단무지
         self.BPM=BPM
-        self.Scroll=Scroll
+        self.scroll=scroll
         self.GOGO=GOGO #True는 고고중 False는 아님
-        self.Balloon=Balloon # 풍선 갯수
+        self.balloon=balloon # 풍선 갯수
     def setNote(self,Note):
-        self.NoteParam=copy.deepcopy(Note.NoteParam)
+        self.noteParam=copy.deepcopy(Note.noteParam)
         self.BPM=copy.deepcopy(Note.BPM)
-        self.Scroll=copy.deepcopy(Note.Scroll)
+        self.scroll=copy.deepcopy(Note.scroll)
         self.GOGOStart=copy.deepcopy(Note.GOGO)
-        self.Balloon=copy.deepcopy(Note.Balloon)
+        self.balloon=copy.deepcopy(Note.balloon)
     def setZero(self):
-        self.NoteParam=0
+        self.noteParam=0
     def __repr__(self):
-        return self.NoteParam
+        return self.noteParam
 
 
 class Track:
@@ -98,19 +98,14 @@ class Track:
             print(bar)
     def toTJAForm(self):
         s=str()
-        
-
-
-
-
-
-
     def __repr__(self):
         return str([self.COURSE,self.LEVEL,self.SCOREINIT,self.SCOREDIFF,self.STYLE])
 
+
+
 class TJA:
     def __init__(self):
-        self.Track_list=list()
+        self.track_list=list()
         self.TITLE="default"
         self.SUBTITLE="default"
         self.BPM=100
@@ -125,10 +120,10 @@ class TJA:
         self.GAME=''
         self.LIFE=''
     def newTrack(self):
-        self.Track_list.append(Track())
+        self.track_list.append(Track())
     def print(self):
         print(self)
-        for Tr in self.Track_list:
+        for Tr in self.track_list:
             Tr.print()
     def toTJAForm(self):
         s=str()
@@ -144,7 +139,7 @@ class TJA:
         s=s+"SCOREMODE:"+str(self.SCOREMODE)+"\n"
         s=s+"GENRE:"+str(self.GENRE)+"\n"
         s=s+"\n"
-        for track in self.Track_list:
+        for track in self.track_list:
             s=s+"COURSE:"+str(track.COURSE)+"\n"
             s=s+"LEVEL:"+str(track.LEVEL)+"\n"
 
@@ -159,17 +154,16 @@ class TJA:
 
             s=s+"STYLE:"+str(track.STYLE)+"\n"
 
-            
             curMeasure=[4,4]
             curBPM=self.BPM
-            BallonList=list()
+            ballonList=list()
             for bar in track.bar_list:
-                for beat in bar.Beat_list:
-                    for note in beat.Note_List:
-                        if note.NoteParam=='7':
-                            BallonList.append(note.Balloon)
+                for beat in bar.beat_list:
+                    for note in beat.note_list:
+                        if note.noteParam=='7':
+                            ballonList.append(note.balloon)
             s=s+"BALLOON:"
-            for i in BallonList:
+            for i in ballonList:
                 s=s+i+","
                 
             s=s+"\n"+"#START"+"\n"
@@ -177,8 +171,5 @@ class TJA:
         
         return s
 
-
     def __repr__(self):
         return str([self.TITLE,self.SUBTITLE,self.BPM,self.WAVE,self.SONGVOL,self.SEVOL,self.OFFSET,self.DEMOSTART,self.SIDE,self.SCOREMODE,self.GENRE,self.GAME,self.LIFE])
-
-

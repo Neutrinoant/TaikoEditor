@@ -5,13 +5,13 @@ import sys
 
 
 def delcomment(s):
-    newstr=list()
+    newStr=list()
     for i in s:
         if i=='':
             continue
         else:
-            newstr.append(re.sub('//(.*)','',i))
-    return newstr
+            newStr.append(re.sub('//(.*)','',i))
+    return newStr
 
 
 
@@ -19,9 +19,9 @@ def makeTrack(TJA):
     l=len(TJA)
     
     T=Score.TJA()
-    T.Track_list.append(Score.Track())
-    CurTrIdx=0
-    CurBalloonlist=None
+    T.track_list.append(Score.Track())
+    curTrIdx=0
+    curBalloonList=None
     flag=False
     bar=list()
     for line in range(l):
@@ -75,37 +75,37 @@ def makeTrack(TJA):
             #코스별 데이터
             s=re.match('COURSE:(.*)',TJA[line])
             if s!=None:
-                T.Track_list[CurTrIdx].COURSE=s.group(1)
+                T.track_list[curTrIdx].COURSE=s.group(1)
                 # print(s.group(1))
                 continue
             s=re.match('LEVEL:(.*)',TJA[line])
             if s!=None:
-                T.Track_list[CurTrIdx].LEVEL=int(s.group(1))
+                T.track_list[curTrIdx].LEVEL=int(s.group(1))
                 continue
             s=re.match('SCOREINIT:(.*)',TJA[line])
             if s!=None:
                 if s.group(1) == '':
                     continue
-                T.Track_list[CurTrIdx].SCOREINIT=int(s.group(1))
+                T.track_list[curTrIdx].SCOREINIT=int(s.group(1))
                 continue
             s=re.match('SCOREDIFF:(.*)',TJA[line])
             if s!=None:
                 if s.group(1) == '':
                     continue
-                T.Track_list[CurTrIdx].SCOREDIFF=int(s.group(1))
+                T.track_list[curTrIdx].SCOREDIFF=int(s.group(1))
                 continue
             s=re.match('BALLOON:(.*)',TJA[line])
             if s!=None:
                 if s.group(1) == '':
                     continue
-                CurBalloonlist=s.group(1).split(',')
-                # print(CurBalloonlist)
+                curBalloonList=s.group(1).split(',')
+                # print(curBalloonList)
                 continue
             s=re.match('STYLE:(.*)',TJA[line])
             if s!=None:
                 if s.group(1) == '':
                     continue
-                T.Track_list[CurTrIdx].STYLE=s.group(1)
+                T.track_list[curTrIdx].STYLE=s.group(1)
                 continue
             if TJA[line]=='#START':
                 flag=True
@@ -113,31 +113,30 @@ def makeTrack(TJA):
         else:
             if TJA[line]=='#END':
                 flag=False
-                T.Track_list[CurTrIdx].bar_list=makeBarList(bar,T.BPM,CurBalloonlist)
+                T.track_list[curTrIdx].bar_list=makeBarList(bar,T.BPM,curBalloonList)
                 bar=list()
                 if line<l-1:
                     #END가 나오고 더 나오는게 있다면 일단 하나 더 만들기    
                     T.newTrack()
-                    CurTrIdx=CurTrIdx+1
+                    curTrIdx=curTrIdx+1
             else:
                 bar=bar+[TJA[line]]
         
-        
     print(T.toTJAForm())
-    
     return T
 
-def makeBarList(bar,defaultBPM,Balloonlist):
+
+def makeBarList(bar,defaultBPM,balloonList):
     # print(bar)
     #이 함수는 bar의 list를 만든다. 
     res=list()
     curIdx=0
     SCROLL=1.0
-    BalloonIdx=0
+    balloonIdx=0
     BPM=defaultBPM
     GOGO=False
     MEASURE=[4,4]
-    TempList=list()
+    tempList=list()
     for line in bar:
         # print(line)
         if line[0]=='#':
@@ -161,21 +160,23 @@ def makeBarList(bar,defaultBPM,Balloonlist):
         else:
             for note in line:
                 if note==',':
-                    if len(TempList)==0:
-                        TempList.append(Score.Note(BPM,0,SCROLL,None,GOGO))
+                    if len(tempList)==0:
+                        tempList.append(Score.Note(BPM,0,SCROLL,None,GOGO))
                     res.append(Score.Bar(MEASURE))
-                    res[curIdx].setNoteList(TempList)
+                    res[curIdx].setNoteList(tempList)
                     curIdx=curIdx+1
-                    TempList=list()
+                    tempList=list()
                 elif note=='7':
-                    TempList.append(Score.Note(BPM,note,SCROLL,Balloonlist[BalloonIdx],GOGO))
-                    BalloonIdx=BalloonIdx+1
+                    tempList.append(Score.Note(BPM,note,SCROLL,balloonList[balloonIdx],GOGO))
+                    balloonIdx=balloonIdx+1
                 else:
-                    TempList.append(Score.Note(BPM,note,SCROLL,None,GOGO))
+                    tempList.append(Score.Note(BPM,note,SCROLL,None,GOGO))
     return res
 
+
+
 if __name__ == "__main__":
-    with codecs.open("../TJAfile/Tulip.tja", "r",encoding='shift-jis', errors='ignore') as f:
+    with codecs.open("../TJAfile/Tulip.tja", "r", encoding='shift-jis', errors='ignore') as f:
         dat=f.read()
         s=dat.splitlines()
         # print(s)
