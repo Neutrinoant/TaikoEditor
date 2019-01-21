@@ -37,7 +37,7 @@ class Bar:
     def __repr__(self):
         s=str()
         for b in self.Beat_list:
-            s=s+str(b)
+            s=s+str(b)+" "
         return s
 
 
@@ -82,12 +82,6 @@ class Note:
         return self.NoteParam
 
 
-
-
-
-
-
-
 class Track:
     def __init__(self):
         self.bar_list=list()
@@ -102,6 +96,15 @@ class Track:
         print(self)
         for bar in self.bar_list:
             print(bar)
+    def toTJAForm(self):
+        s=str()
+        
+
+
+
+
+
+
     def __repr__(self):
         return str([self.COURSE,self.LEVEL,self.SCOREINIT,self.SCOREDIFF,self.STYLE])
 
@@ -127,6 +130,54 @@ class TJA:
         print(self)
         for Tr in self.Track_list:
             Tr.print()
+    def toTJAForm(self):
+        s=str()
+        s=s+"TITLE:"+str(self.TITLE)+"\n"
+        s=s+"SUBTITLE:"+str(self.SUBTITLE)+"\n"
+        s=s+"BPM:"+str(self.BPM)+"\n"
+        s=s+"WAVE:"+str(self.WAVE)+"\n"
+        s=s+"SONGVOL:"+str(self.SONGVOL)+"\n"
+        s=s+"SEVOL:"+str(self.SEVOL)+"\n"
+        s=s+"OFFSET:"+str(self.OFFSET)+"\n"
+        s=s+"DEMOSTART:"+str(self.DEMOSTART)+"\n"
+        s=s+"SIDE:"+str(self.SIDE)+"\n"
+        s=s+"SCOREMODE:"+str(self.SCOREMODE)+"\n"
+        s=s+"GENRE:"+str(self.GENRE)+"\n"
+        s=s+"\n"
+        for track in self.Track_list:
+            s=s+"COURSE:"+str(track.COURSE)+"\n"
+            s=s+"LEVEL:"+str(track.LEVEL)+"\n"
+
+            if track.SCOREINIT==0:
+                s=s+"SCOREINIT:"+"\n"
+            else:
+                s=s+"SCOREINIT:"+str(track.SCOREINIT)+"\n"
+            if track.SCOREDIFF==0:
+                s=s+"SCOREDIFF:"+"\n"
+            else:
+                s=s+"SCOREDIFF:"+str(track.SCOREDIFF)+"\n"
+
+            s=s+"STYLE:"+str(track.STYLE)+"\n"
+
+            
+            curMeasure=[4,4]
+            curBPM=self.BPM
+            BallonList=list()
+            for bar in track.bar_list:
+                for beat in bar.Beat_list:
+                    for note in beat.Note_List:
+                        if note.NoteParam=='7':
+                            BallonList.append(note.Balloon)
+            s=s+"BALLOON:"
+            for i in BallonList:
+                s=s+i+","
+                
+            s=s+"\n"+"#START"+"\n"
+            s=s+"#END"+"\n"
+        
+        return s
+
+
     def __repr__(self):
         return str([self.TITLE,self.SUBTITLE,self.BPM,self.WAVE,self.SONGVOL,self.SEVOL,self.OFFSET,self.DEMOSTART,self.SIDE,self.SCOREMODE,self.GENRE,self.GAME,self.LIFE])
 

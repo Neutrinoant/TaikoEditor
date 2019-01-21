@@ -105,7 +105,7 @@ def makeTrack(TJA):
             if s!=None:
                 if s.group(1) == '':
                     continue
-                T.Track_list[CurTrIdx].STYLE=int(s.group(1))
+                T.Track_list[CurTrIdx].STYLE=s.group(1)
                 continue
             if TJA[line]=='#START':
                 flag=True
@@ -123,7 +123,7 @@ def makeTrack(TJA):
                 bar=bar+[TJA[line]]
         
         
-    T.print()
+    print(T.toTJAForm())
     
     return T
 
@@ -175,7 +175,7 @@ def makeBarList(bar,defaultBPM,Balloonlist):
     return res
 
 if __name__ == "__main__":
-    with codecs.open("../TJAfile/ドンカマ2000.tja", "r",encoding='shift-jis', errors='ignore') as f:
+    with codecs.open("../TJAfile/Tulip.tja", "r",encoding='shift-jis', errors='ignore') as f:
         dat=f.read()
         s=dat.splitlines()
         # print(s)
