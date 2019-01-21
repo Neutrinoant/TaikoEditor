@@ -174,19 +174,19 @@ def makeBarList(bar,defaultBPM,balloonList):
     return res
 
 
-
-if __name__ == "__main__":
-    with codecs.open("../TJAfile/Tulip.tja", "r", encoding='shift-jis', errors='ignore') as f:
+def TJAparser(fname):
+    with codecs.open(fname, "r", encoding='shift-jis', errors='ignore') as f:
         dat=f.read()
         s=dat.splitlines()
-        # print(s)
-
     s=delcomment(s)
-    # print(s)
-    makeTrack(s)
+    t=makeTrack(s)
+    return t
 
 
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        sys.stderr.write("Usage: %s <tja file>\n" % sys.argv[0])
+        sys.exit(1)
 
-
-
-    
+    fname = sys.argv[1]
+    TJAparser(fname)
