@@ -34,6 +34,11 @@ class Bar:
             if cnt>=l:
                 BeatListIdx=BeatListIdx+idxoffset
                 cnt=0
+    def __repr__(self):
+        s=str()
+        for b in self.Beat_list:
+            s=s+str(b)
+        return s
 
 
 
@@ -51,6 +56,11 @@ class Beat:
         N=Note()
         N.setNote(note)
         self.Note_List.append(N)
+    def __repr__(self):
+        s=str()
+        for note in self.Note_List:
+            s=s+str(note)
+        return s
 
 
 class Note:
@@ -90,6 +100,8 @@ class Track:
         self.bar_list.append(bar)
     def print(self):
         print(self)
+        for bar in self.bar_list:
+            print(bar)
     def __repr__(self):
         return str([self.COURSE,self.LEVEL,self.SCOREINIT,self.SCOREDIFF,self.STYLE])
 

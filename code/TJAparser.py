@@ -113,7 +113,7 @@ def makeTrack(TJA):
         else:
             if TJA[line]=='#END':
                 flag=False
-                b=makeBarList(bar,T.BPM,CurBalloonlist)
+                T.Track_list[CurTrIdx].bar_list=makeBarList(bar,T.BPM,CurBalloonlist)
                 bar=list()
                 if line<l-1:
                     #END가 나오고 더 나오는게 있다면 일단 하나 더 만들기    
@@ -172,9 +172,6 @@ def makeBarList(bar,defaultBPM,Balloonlist):
                     BalloonIdx=BalloonIdx+1
                 else:
                     TempList.append(Score.Note(BPM,note,SCROLL,None,GOGO))
-        
-
-
     return res
 
 if __name__ == "__main__":
