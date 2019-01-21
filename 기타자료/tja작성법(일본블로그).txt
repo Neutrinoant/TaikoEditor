@@ -1,0 +1,191 @@
+ÃâÃ³: http://taikosanjiro.hatenablog.com/entry/%E8%AD%9C%E9%9D%A2-2
+
+header
+
+TITLE:
+Title of the song.
+
+LEVEL:
+level. Notation with ¡Ú. If natural number maybe there is no upper limit.
+
+BPM :
+Song of BPM . Decimal can be specified.
+
+WAVE:
+The wav file name to play. Even ogg .¡¡
+
+OFFSET:
+The difference between the start position of the score and the time of playing the wav file. It is specified in seconds. 
+If you specify minus, the song will start earlier than the start of the score.
+
+BALLOON:
+Strokes of Goki succession and potato strokes. Designate as many as the number of balloons, separated by (comma). 
+Please do not include line breaks between numbers and numbers. 
+In case of omitting, it is uniformly 5 strokes.
+
+SONGVOL:
+Volume of music data. Enter the percentage based on 100.
+
+SEVOL:
+The volume of the drum sound. Enter the percentage based on 100.
+
+SCOREINIT:
+You can specify the score when hitting a small note with good judgment when it is less than 10 combos. 
+When the scoring system is stable, the scoring is entered after entering a comma like 550, 800.
+
+SCOREDIFF:
+10 Specify the score per hit to be added for each combo. 
+If you enter the alphabet d at the end of the value, the addition of points per hit becomes only once when 200 combo is exceeded. 
+If you enter SCOREINIT: 1000, SCOREDIFF: 1000 d, you will get a full course score (big notes will double the score). In addition, the go-go time will be treated as a 1.2-point score.
+
+COURSE:
+"Easy" "Normal" "Hard" "Oni" "Edit" Enter a value from 0 to 4. 
+The first four correspond to 'simple', 'normal' 'difficult' 'toe', 
+and how to increase the number of norm gauges changes (AC standard, but it may be different). 
+When set to Edit, the score will conform to SCOREINIT and SCOREDIFF. Norma is the same as duck. 
+In "Easy" "Normal", the display of the Norma Gauge collapses somewhat. 
+When omitted, it is treated as "Oni". 
+When "Tower" or 5 is inserted, hit notes are always displayed above donkeys and blindfolds. 
+Norma gauges and scoring are treated the same as Edit.
+STYLE:
+Enter "Single" "Double" "Couple" or a number from 1 to 2. 
+Single means playing alone, Double and Couple shows that it is a musical score for two players. There is no difference between Double and Couple. 
+By inserting #START P1, # START P2 after Double (Couple) you can enter a different score on 1P side and 2P side. 
+If you select a different course in 1P and 2P when selecting music notes, even if there is a music score for two players, a music score for single player flows.
+
+GAME: Enter either "Taiko" or "Jube". If omitted, it will be treated as "Taiko".
+¡¡¡¡¡¡Type of music you enter. In "Jube" it will be autoplay only.
+
+LIFE:
+life. When this value is set, the performance will be forcibly interrupted when the life decreases to 0 each time it becomes impossible. Life will decrease continuously even if you give out impossible at short intervals. If you omit it or enter 0, it becomes normal gauge gauge.
+
+DEMOSTART:
+The playback start position of the demonstration played on the music selection screen. It is specified in seconds. 
+If omitted, it will be played from the beginning of the music file.
+
+SIDE:
+"Normal" "Ex" "Both" or enter numbers 1 to 3. If omitted, it is "3". 
+When "Normal" or "1" is entered, songs are displayed only when in table state on the song selection screen, and when 
+"Ex" or "2" is entered, it is displayed only when it is in reverse side. 
+You can switch between front and back states by inputting the left and right edges (D, K key) alternately ten times on the song selection screen. 
+You can not specify more than one SIDE: in one music file.
+
+SUBTITLE:
+Subtitle of the song. On the result screen, it is displayed as a smaller size (0.8 times) under the title. 
+"Title subtitle" is displayed in the order 
+of titles being played, but if you enter "-" at the beginning of the subtitle, subtitle will not be displayed in the title of the song you are playing. 
+You can also explicitly display subtitles by adding "++".
+
+SCOREMODE:
+Scoring method. Enter a number between 0 and 2. If omitted, 1. 
+It will be in full mode from 0, in the order before AC14, newly allocated point. 
+The section surrounded by # START and # END is taken as music score data. 
+By specifying the course with COURSE: just before, you can describe the score of a different course in a single music file at once.
+
+After specifying Double or Couple with STYLE:, you can enter # START P1 or # START P2 instead of # START to separately enter 1P side and 2P side music. 
+Separate each bar with (comma). 
+The number of characters per bar is the minimum unit of measure (4-minute unit for 4 characters, 16-minute unit for 16 characters). Also, since the maximum number of characters per bar is about a little 500, if you try to divide a note in extremely fine detail, an error will occur or it will kill it.
+
+note
+The correspondence between each character and a note is as follows.
+
+0 = rest 
+1 = Don 
+2 = cutlet 
+3 = Don (large) 
+4 = cutlet (large) 
+5 = barrage started 
+6 = battered (large) starting 
+7 = Geki barrage started 
+9 = potato battered start 
+8 = battered ends 
+from repeated pressing the start I will make a series of hits between 8 and 8. It looks like "500008".
+
+It is okay to spread the same numbers like "555558".
+
+Not corresponded to notes such as bells and denden.
+
+After / / (half-width slash two), it is treated as a comment and ignored. It might be used instead of memos. 
+If you omit the end of Goki repeatedly, the next note that did not break the balloon will be forcibly disabled. 
+If you insert "9" between the start and the end of a potato striking, that position becomes a border with 5000 points. 
+If there are two or more 9s between "909900008", the last 9 positions are used. 
+When not sandwiching 9 between "900000008", the position 0.6 times the length of the successive hit becomes the border.
+
+If you hit repeated hits earlier than the border, you get 5000 points, after that 1000 points scores will be entered.
+
+For example) 
+"1111," four times at 4 minute intervals. 
+For "10101212," the ¡¡same is true for the case of "Don Dong Dokadoka" 
+"1010 
+1212," at 8 minute intervals .
+
+order
+Instructions begin with "#". Please be sure to fill in from the beginning of the line. 
+Some instructions can also be reflected in the middle of a bar.
+
+#BPMCHANGE ??
+BPM was specified in ?? BPM to change. Decimals are also acceptable.
+
+# GOGOSTART
+Go-go started.
+
+# GOGOEND
+Go-go time end. Please be sure to end it when you start.
+
+#MEASURE? /?
+Change the time signature to the? /? Time signature. "4/4" with four quarter beat, "6/8" with eighth sixth beat. 
+If omitted, it is 4/4.
+
+# SCROLL ??
+Doubles the scroll speed of music. The default is 1.00. 
+The interval actually hit does not change, it changes only as it looks.
+
+# DELAY ??
+Delay the timing at which the following notes flow by? Seconds. Specifications finer than 0.001 seconds are ignored. Please use it when 
+BPM does not change but slight deviation occurs due to the joint of songs.
+
+#SECTION
+Reset the number of consecutive hits and precision used to judge music branch. 
+Please put it more than one measure before the branch point.
+
+#BRANCHSTART ?, X, Y
+Start the music branch. 
+If you insert "r" in the?, You can branch (roll) by number of consecutive hits, branch (precision, perfect) with precision if you insert p, and branch with score (score). 
+When the number of consecutive hits at the time of branch judgment is equal to or more than Y stroke or the precision is Y% or more, the program branches to the 
+spiritual score when the number of consecutive strokes is X strokes or more or X% or more 
+. If it is set so that X> Y, it will not branch to a professional spiritual score. 
+Branch judgment is done one measure before this command (If you continue to hit from one bar before, it will count that successive hit).
+
+#BRANCHEND
+I will finish the music branch. From now on, a common score will flow through all branches. 
+Can be omitted if branching is not required.
+
+#N
+After this, enter the ordinary notation from the score branch (Normal).
+
+#E
+After this you enter the score of the professional from the music branch (Expert).
+
+#M
+After this, enter the master's score from the music branch (Master). 
+# N, # E, # M measures are aligned to the number of measures in the first music score. 
+Minutes that are short of length are filled with blanks, but it will be strange if it is long, so it is safer to enter the number of measures aligned.
+
+#LEVELHOLD
+If this command reaches a certain measure, branching is not performed even if there is a music branch thereafter, and the current music notation is maintained.
+
+# BMSCROLL
+Please write before #START. 
+In the presence of this command, the scrolling of the score is forced to be the same way as Taiko Taro (the value of #SCROLL is ignored). 
+Also, at this point # of music scrolling stops where there is # DELAY.
+
+#HBSCROLL
+Please write before #START. 
+If this instruction is present, it will forcefully scroll with BMSCROLL including # SCROLL effect.
+
+#BARLINEOFF
+Do not display barlines in measures following this command. 
+It also applies to the yellow line when branching.
+
+#BARLINEON
+We will display barlines of measures following this command.
