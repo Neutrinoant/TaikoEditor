@@ -1,0 +1,15 @@
+<RCC>
+  <qresource prefix="res">
+    <file>res/track/add_beat(20x20).png</file>
+    <file>res/track/beat(48x50).png</file>
+    <file>res/track/beat(48x50)_mod.png</file>
+    <file>res/track/beat_end(48x50).png</file>
+    <file>res/track/del_beat(20x20).png</file>
+    <file>res/note/don.png</file>
+    <file>res/note/img_balloon.png</file>
+    <file>res/note/img_don.png</file>
+    <file>res/note/img_don_big.png</file>
+    <file>res/note/img_kat.png</file>
+    <file>res/note/img_kat_big.png</file>
+  </qresource>
+</RCC>
