@@ -30,6 +30,7 @@ class MainWindow(QMainWindow, form_class):
         self.beatInfo = {'beats':[], 'hIndex':-1}
 
         self.push_load.clicked.connect(self.push_load_clicked)
+        print(self.label_beat.width())
 
 
     def push_changeOrder_clicked(self):
@@ -52,7 +53,7 @@ class MainWindow(QMainWindow, form_class):
         
         if noteImage!=None:
             label.setPixmap(noteImage)
-        beatSize=[self.label_beat.width(),self.label_beat.width()]
+        beatSize=[self.label_beat.height(),self.label_beat.height()]
         if note==1 or note==2:
             label.setGeometry(0,0,beatSize[0]//3,beatSize[1]//3)
         else:
@@ -130,14 +131,13 @@ class MainWindow(QMainWindow, form_class):
             bList.append(self.makeLabelBeat(end=True))
             beatIdx = 0
             for beat in bar.beat_list:
-                xpos = bList[beatIdx].x()
-                ypos = bList[beatIdx].y()
-                print(xpos, ypos)
+                w = bList[beatIdx].width()
+                h = bList[beatIdx].height()
                 split = beat.splitParam
                 offset = bList[0].width() // split
                 nList = [self.makeLabelNote(note.getNote()) for note in beat.note_list]
                 for i in range(len(nList)):
-                    nList[i].move(xpos+offset*i, ypos)  # need modify
+                    nList[i].move((1+beatIdx)*w+offset*i, 0)  # need modify
                 beatIdx += 1
 
 
@@ -159,6 +159,8 @@ class MainWindow(QMainWindow, form_class):
         # insert new img_beat in layout and managable list
         self.horizontalLayout.addWidget(label)
         print(label.x(), label.y())
+        
+        print(self.scrollAreaWidgetContents.x(), self.scrollAreaWidgetContents.y(), self.scrollAreaWidgetContents.width(), self.scrollAreaWidgetContents.height())
         return label
 
     
