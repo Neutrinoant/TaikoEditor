@@ -33,12 +33,23 @@ class MainWindow(QMainWindow, form_class):
         self.label_don3.raise_()
         self.label_don3.stackUnder(self.label_don2)
 
-    def makeLabelDon(self):
+    def makeLabelNote(self,note):
         # make label_don
-        donImage = QPixmap(':/res/res/note/img_don.png')
+        if note==1:
+            noteImage= QPixmap(':/res/res/note/img_don.png')
+        elif note==2:
+            noteImage = QPixmap(':/res/res/note/img_kat.png')
+        elif note==3:
+            noteImage= QPixmap(':/res/res/note/img_don_big.png')
+        elif note==4:
+            noteImage= QPixmap(':/res/res/note/img_kat_big.png')
         label = QLabel(self.scrollAreaWidgetContents)
-        label.setPixmap(donImage)
-        label.setGeometry(QRect(0,0,0,0))
+        label.setPixmap(noteImage)
+        scrollAreaSize=[self.scrollArea.width(),self.scrollArea.height()]
+        if note==1 or note==2:
+            label.setGeometry(0,0,scrollAreaSize[0]//2,scrollAreaSize[1]//2)
+        else:
+            label.setGeometry(0,0,scrollAreaSize[0]*2//3,scrollAreaSize[1]*2//3)
         label.setScaledContents(True)
         return label
 
