@@ -127,7 +127,6 @@ class MainWindow(QMainWindow, form_class):
             m = bar.measure
             bList = [self.makeLabelBeat() for _ in range(m[0]-1)]
             bList.append(self.makeLabelBeat(end=True))
-<<<<<<< HEAD
             bListIdx = 0
             for beat in bar:
                 split = beat.splitParam
@@ -137,11 +136,6 @@ class MainWindow(QMainWindow, form_class):
                     
     
 
-=======
-            bListidx=0
-            for beat in bar:
-                bList[bListidx].
->>>>>>> a1ad37d2cbc1294ee37b3639cb581a9ebcf0d46e
             
 
     def makeLabelBeat(self, end=False):

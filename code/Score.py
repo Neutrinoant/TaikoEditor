@@ -81,6 +81,8 @@ class Note:
         self.balloon=copy.deepcopy(Note.balloon)
     def setZero(self):
         self.noteParam=0
+    def getNote(self):
+        return int(self.noteParam)
     def __repr__(self):
         return self.noteParam
 
