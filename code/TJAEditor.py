@@ -29,6 +29,9 @@ class MainWindow(QMainWindow, form_class):
 
         self.beatInfo = {'beats':[], 'hIndex':-1}
 
+        self.push_load.clicked.connect(self.push_load_clicked)
+
+
     def push_changeOrder_clicked(self):
         self.label_don3.raise_()
         self.label_don3.stackUnder(self.label_don2)
@@ -99,6 +102,33 @@ class MainWindow(QMainWindow, form_class):
         self.horizontalLayout.takeAt(self.beatInfo['hIndex']).widget().deleteLater()
         print(self.beatInfo['hIndex'])
         self.beatInfo['hIndex'] = -1
+
+
+    def push_load_clicked(self):
+        fname = QFileDialog.getOpenFileName(self)[0]
+        self.score = Score.TJA(fname)
+        track = self.score.track_list[0]
+        for bar in track.bar_list:
+            m = bar.measure
+            bList = [self.makeLabelBeat() for _ in range(m[0]-1)]
+            bList.append(self.makeLabelBeat(end=True))
+            
+
+    def makeLabelBeat(self, end=False):
+        # make new img_beat
+        if not end:
+            beatImage = QPixmap(':/res/res/track/beat(48x50).png')
+        else:
+            beatImage = QPixmap(':/res/res/track/beat_end(48x50).png')
+        label = QLabel(self.scrollAreaWidgetContents)
+        label.setPixmap(beatImage)
+        label.setScaledContents(True)
+        label.setFixedSize(self.scrollArea.height()*2/3, self.scrollArea.height()*2/3)
+        label.lower()
+        label.show()
+
+        # insert new img_beat in layout and managable list
+        self.horizontalLayout.addWidget(label)
 
     
 class ClickableLabel(QLabel):

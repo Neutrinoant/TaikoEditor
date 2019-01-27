@@ -210,6 +210,19 @@
      <string>보면삭제</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="push_load">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>350</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>로드</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
