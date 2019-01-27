@@ -24,7 +24,7 @@ class MainWindow(QMainWindow, form_class):
 
     def push_changeOrder_clicked(self):
         self.label_don3.raise_()
-        self.label_don3.stackUnder(self.label_don2)
+        # self.label_don3.stackUnder(self.label_don2)
 
     def makeLabelDon(self):
         # make label_don

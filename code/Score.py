@@ -1,4 +1,7 @@
 import copy
+import re
+import codecs
+import sys
 
 class Bar:
     def __init__(self,measure):
@@ -104,7 +107,7 @@ class Track:
 
 
 class TJA:
-    def __init__(self):
+    def __init__(self,fname=None):
         self.track_list=list()
         self.TITLE="default"
         self.SUBTITLE="default"
@@ -119,57 +122,230 @@ class TJA:
         self.GENRE="default"
         self.GAME=''
         self.LIFE=''
+    
+        if fname==None:
+            return
+        
+        with codecs.open(fname, "r", encoding='shift-jis', errors='ignore') as f:
+            s=f.read().splitlines()
+
+        rawData=list()
+        courseNum=0
+        for i in s:
+            if i=='':
+                continue
+            else:
+                k=re.sub('//(.*)','',i)
+                r=re.match('COURSE:(.*)',k)
+                if r!=None:
+                    courseNum=courseNum+1
+
+                rawData.append(k)
+
+        if courseNum==0:
+            courseNum=1
+
+        self.track_list=[Track() for _ in range(courseNum)]
+        curTrIdx=0
+        curBalloonList=list()
+        flag=False
+        l=len(rawData)
+        for line in rawData:
+            if not flag:
+                #곡 전체 데이터
+                s=re.match('TITLE:(.*)',line)
+                if s!=None:
+                    self.TITLE=s.group(1)
+                    continue
+                s=re.match('SUBTITLE:(.*)',line)
+                if s!=None:
+                    self.SUBTITLE=s.group(1)
+                    continue
+                s=re.match('BPM:(.*)',line)
+                if s!=None:
+                    self.BPM=int(s.group(1))
+                    continue
+                s=re.match('WAVE:(.*)',line)
+                if s!=None:
+                    self.WAVE=s.group(1)
+                    continue
+                s=re.match('SONGVOL:(.*)',line)
+                if s!=None:
+                    self.SONGVOL=int(s.group(1))
+                    continue
+                s=re.match('SEVOL:(.*)',line)
+                if s!=None:
+                    self.SEVOL=int(s.group(1))
+                    continue
+                s=re.match('OFFSET:(.*)',line)
+                if s!=None:
+                    self.OFFSET=float(s.group(1))
+                    continue
+                s=re.match('DEMOSTART:(.*)',line)
+                if s!=None:
+                    self.DEMOSTART=float(s.group(1))
+                    continue
+                s=re.match('SIDE:(.*)',line)
+                if s!=None:
+                    self.SIDE=int(s.group(1))
+                    continue
+                s=re.match('SCOREMODE:(.*)',line)
+                if s!=None:
+                    self.SCOREMODE=int(s.group(1))
+                    continue
+                s=re.match('GENRE:(.*)',line)
+                if s!=None:
+                    self.GENRE=s.group(1)
+                    continue
+
+                #코스별 데이터
+                s=re.match('COURSE:(.*)',line)
+                if s!=None:
+                    self.track_list[curTrIdx].COURSE=s.group(1)
+                    # print(s.group(1))
+                    continue
+                s=re.match('LEVEL:(.*)',line)
+                if s!=None:
+                    self.track_list[curTrIdx].LEVEL=int(s.group(1))
+                    continue
+                s=re.match('SCOREINIT:(.*)',line)
+                if s!=None:
+                    if s.group(1) == '':
+                        continue
+                    self.track_list[curTrIdx].SCOREINIT=int(s.group(1))
+                    continue
+                s=re.match('SCOREDIFF:(.*)',line)
+                if s!=None:
+                    if s.group(1) == '':
+                        continue
+                    self.track_list[curTrIdx].SCOREDIFF=int(s.group(1))
+                    continue
+                s=re.match('BALLOON:(.*)',line)
+                if s!=None:
+                    if s.group(1) == '':
+                        continue
+                    curBalloonList=s.group(1).split(',')
+                    # print(curBalloonList)
+                    continue
+                s=re.match('STYLE:(.*)',line)
+                if s!=None:
+                    if s.group(1) == '':
+                        continue
+                    self.track_list[curTrIdx].STYLE=s.group(1)
+                    continue
+                if line=='#START':
+                    flag=True
+            #보면 파싱하기
+            else:
+                curGOGO=False
+                curSCROLL=1.0
+                curBPM=self.BPM
+                curMEASURE=[4,4]
+                tempList=list()
+                balloonIdx=0
+                if line=='#END':
+                    flag=False
+                    # self.track_list[curTrIdx].bar_list=makeBarList(bar,self.BPM,curBalloonList)
+                    curTrIdx=curTrIdx+1
+                else:
+                    if line[0]=='#':
+                        if line=='#GOGOSTART':
+                            curGOGO=True
+                        if line=='#GOGOEND':
+                            curGOGO=False
+                        s=re.match('#SCROLL (.*)',line)
+                        if s!=None:
+                            curSCROLL=float(s.group(1))
+                            continue
+                        s=re.match('#BPMCHANGE (.*)',line)
+                        if s!=None:
+                            curBPM=float(s.group(1))
+                            continue
+                        s=re.match("#MEASURE (.*)/(.*)",line)
+                        if s!=None:
+                            curMEASURE[0]=int(s.group(1))
+                            curMEASURE[1]=int(s.group(2))
+                            continue
+                    else:
+                        for note in line:
+                            if note==',':
+                                if len(tempList)==0:
+                                    tempList.append(Note(curBPM,'0',curSCROLL,None,curGOGO))
+                                B=Bar(curMEASURE)
+                                B.setNoteList(tempList)
+                                self.track_list[curTrIdx].pushBar(B)
+                                tempList=list()
+                            elif note=='7':
+                                tempList.append(Note(curBPM,note,curSCROLL,curBalloonList[balloonIdx],curGOGO))
+                                balloonIdx=balloonIdx+1
+                            else:
+                                tempList.append(Note(curBPM,note,curSCROLL,None,curGOGO))
+
+
     def newTrack(self):
         self.track_list.append(Track())
     def print(self):
         print(self)
         for Tr in self.track_list:
             Tr.print()
-    def toTJAForm(self):
-        s=str()
-        s=s+"TITLE:"+str(self.TITLE)+"\n"
-        s=s+"SUBTITLE:"+str(self.SUBTITLE)+"\n"
-        s=s+"BPM:"+str(self.BPM)+"\n"
-        s=s+"WAVE:"+str(self.WAVE)+"\n"
-        s=s+"SONGVOL:"+str(self.SONGVOL)+"\n"
-        s=s+"SEVOL:"+str(self.SEVOL)+"\n"
-        s=s+"OFFSET:"+str(self.OFFSET)+"\n"
-        s=s+"DEMOSTART:"+str(self.DEMOSTART)+"\n"
-        s=s+"SIDE:"+str(self.SIDE)+"\n"
-        s=s+"SCOREMODE:"+str(self.SCOREMODE)+"\n"
-        s=s+"GENRE:"+str(self.GENRE)+"\n"
-        s=s+"\n"
-        for track in self.track_list:
-            s=s+"COURSE:"+str(track.COURSE)+"\n"
-            s=s+"LEVEL:"+str(track.LEVEL)+"\n"
 
-            if track.SCOREINIT==0:
-                s=s+"SCOREINIT:"+"\n"
-            else:
-                s=s+"SCOREINIT:"+str(track.SCOREINIT)+"\n"
-            if track.SCOREDIFF==0:
-                s=s+"SCOREDIFF:"+"\n"
-            else:
-                s=s+"SCOREDIFF:"+str(track.SCOREDIFF)+"\n"
+    
+    # def toTJAForm(self):
+    #     s=str()
+    #     s=s+"TITLE:"+str(self.TITLE)+"\n"
+    #     s=s+"SUBTITLE:"+str(self.SUBTITLE)+"\n"
+    #     s=s+"BPM:"+str(self.BPM)+"\n"
+    #     s=s+"WAVE:"+str(self.WAVE)+"\n"
+    #     s=s+"SONGVOL:"+str(self.SONGVOL)+"\n"
+    #     s=s+"SEVOL:"+str(self.SEVOL)+"\n"
+    #     s=s+"OFFSET:"+str(self.OFFSET)+"\n"
+    #     s=s+"DEMOSTART:"+str(self.DEMOSTART)+"\n"
+    #     s=s+"SIDE:"+str(self.SIDE)+"\n"
+    #     s=s+"SCOREMODE:"+str(self.SCOREMODE)+"\n"
+    #     s=s+"GENRE:"+str(self.GENRE)+"\n"
+    #     s=s+"\n"
+    #     for track in self.track_list:
+    #         s=s+"COURSE:"+str(track.COURSE)+"\n"
+    #         s=s+"LEVEL:"+str(track.LEVEL)+"\n"
 
-            s=s+"STYLE:"+str(track.STYLE)+"\n"
+    #         if track.SCOREINIT==0:
+    #             s=s+"SCOREINIT:"+"\n"
+    #         else:
+    #             s=s+"SCOREINIT:"+str(track.SCOREINIT)+"\n"
+    #         if track.SCOREDIFF==0:
+    #             s=s+"SCOREDIFF:"+"\n"
+    #         else:
+    #             s=s+"SCOREDIFF:"+str(track.SCOREDIFF)+"\n"
 
-            curMeasure=[4,4]
-            curBPM=self.BPM
-            ballonList=list()
-            for bar in track.bar_list:
-                for beat in bar.beat_list:
-                    for note in beat.note_list:
-                        if note.noteParam=='7':
-                            ballonList.append(note.balloon)
-            s=s+"BALLOON:"
-            for i in ballonList:
-                s=s+i+","
+    #         s=s+"STYLE:"+str(track.STYLE)+"\n"
+
+    #         curMeasure=[4,4]
+    #         curBPM=self.BPM
+    #         ballonList=list()
+    #         for bar in track.bar_list:
+    #             for beat in bar.beat_list:
+    #                 for note in beaself.note_list:
+    #                     if note.noteParam=='7':
+    #                         ballonLisself.append(note.balloon)
+    #         s=s+"BALLOON:"
+    #         for i in ballonList:
+    #             s=s+i+","
                 
-            s=s+"\n"+"#START"+"\n"
-            s=s+"#END"+"\n"
+    #         s=s+"\n"+"#START"+"\n"
+    #         s=s+"#END"+"\n"
         
-        return s
+    #     return s
 
     def __repr__(self):
         return str([self.TITLE,self.SUBTITLE,self.BPM,self.WAVE,self.SONGVOL,self.SEVOL,self.OFFSET,self.DEMOSTART,self.SIDE,self.SCOREMODE,self.GENRE,self.GAME,self.LIFE])
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        sys.stderr.write("Usage: %s <rawData file>\n" % sys.argv[0])
+        sys.exit(1)
+
+    fname = sys.argv[1]
+    
+    T=TJA(fname)
+    T.print()
