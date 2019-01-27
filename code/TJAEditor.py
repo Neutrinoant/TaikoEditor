@@ -38,7 +38,10 @@ class MainWindow(QMainWindow, form_class):
 
     def makeLabelNote(self,note):
         # make label_don
-        if note==1:
+        label = QLabel(self.scrollAreaWidgetContents)
+        if note == 0:
+            pass
+        elif note==1:
             noteImage= QPixmap(':/res/res/note/img_don.png')
         elif note==2:
             noteImage = QPixmap(':/res/res/note/img_kat.png')
@@ -46,8 +49,9 @@ class MainWindow(QMainWindow, form_class):
             noteImage= QPixmap(':/res/res/note/img_don_big.png')
         elif note==4:
             noteImage= QPixmap(':/res/res/note/img_kat_big.png')
-        label = QLabel(self.scrollAreaWidgetContents)
-        label.setPixmap(noteImage)
+        
+        if noteImage!=None:
+            label.setPixmap(noteImage)
         scrollAreaSize=[self.scrollArea.width(),self.scrollArea.height()]
         if note==1 or note==2:
             label.setGeometry(0,0,scrollAreaSize[0]//2,scrollAreaSize[1]//2)
@@ -123,6 +127,9 @@ class MainWindow(QMainWindow, form_class):
             m = bar.measure
             bList = [self.makeLabelBeat() for _ in range(m[0]-1)]
             bList.append(self.makeLabelBeat(end=True))
+            bListidx=0
+            for beat in bar:
+                bList[bListidx].
             
 
     def makeLabelBeat(self, end=False):
