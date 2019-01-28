@@ -144,7 +144,7 @@ class MainWindow(QMainWindow, form_class):
                     noteList.append(N)
 
                 for i in range(len(noteList)):
-                    noteList[i].move(w+(barIdx*m[0]+beatIdx)*w+offset*i-noteList[i].width()/2, self.label_beat.height()/2)  # need modify
+                    noteList[i].move(w+(barIdx*m[0]+beatIdx)*w+offset*i-noteList[i].width()/2, self.scrollArea.height()/2-noteList[i].height()/2)  # need modify
                 beatIdx += 1
 
             barIdx += 1
