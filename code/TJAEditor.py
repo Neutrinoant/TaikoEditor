@@ -51,9 +51,12 @@ class MainWindow(QMainWindow, form_class):
             noteImage= QPixmap(':/res/res/note/img_don_big.png')
         elif note==4:
             noteImage= QPixmap(':/res/res/note/img_kat_big.png')
+        else:
+            pass  # need other notes (number 5,6,7,8,9)
         
-        if noteImage!=None:
+        if note != 0:
             label.setPixmap(noteImage)
+
         beatSize=[self.label_beat.height(),self.label_beat.height()]
         if note==1 or note==2:
             label.setGeometry(0,0,beatSize[0]//3,beatSize[1]//3)
