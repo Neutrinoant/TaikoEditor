@@ -88,7 +88,7 @@
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>170</y>
+      <y>210</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -101,7 +101,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>170</y>
+      <y>210</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -114,9 +114,9 @@
     <property name="geometry">
      <rect>
       <x>390</x>
-      <y>20</y>
+      <y>60</y>
       <width>351</width>
-      <height>131</height>
+      <height>121</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -124,6 +124,18 @@
       <horstretch>0</horstretch>
       <verstretch>0</verstretch>
      </sizepolicy>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOn</enum>
+    </property>
+    <property name="sizeAdjustPolicy">
+     <enum>QAbstractScrollArea::AdjustIgnored</enum>
     </property>
     <property name="widgetResizable">
      <bool>true</bool>
@@ -134,7 +146,7 @@
        <x>0</x>
        <y>0</y>
        <width>349</width>
-       <height>129</height>
+       <height>98</height>
       </rect>
      </property>
      <property name="sizePolicy">
@@ -165,7 +177,7 @@
       <item>
        <widget class="QLabel" name="label_beat">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -191,7 +203,7 @@
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>220</y>
+      <y>260</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -204,7 +216,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>220</y>
+      <y>260</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -217,7 +229,7 @@
     <property name="geometry">
      <rect>
       <x>440</x>
-      <y>350</y>
+      <y>390</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -230,7 +242,7 @@
     <property name="geometry">
      <rect>
       <x>370</x>
-      <y>200</y>
+      <y>240</y>
       <width>48</width>
       <height>50</height>
      </rect>

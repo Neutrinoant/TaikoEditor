@@ -25,6 +25,7 @@ class MainWindow(QMainWindow, form_class):
         self.push_delBeat.clicked.connect(self.push_delBeat_clicked)
 
         self.label_beat.setFixedSize(self.scrollArea.height()*2/3,self.scrollArea.height()*2/3)
+        self.horizontalLayout.addStretch(1)
         self.MAX_WIDTH = self.label_beat.width()
 
         self.beatInfo = {'beats':[], 'hIndex':-1}
@@ -144,7 +145,7 @@ class MainWindow(QMainWindow, form_class):
                     noteList.append(N)
 
                 for i in range(len(noteList)):
-                    noteList[i].move(w+(barIdx*m[0]+beatIdx)*w+offset*i-noteList[i].width()/2, self.scrollArea.height()/2-noteList[i].height()/2)  # need modify
+                    noteList[i].move(w+(barIdx*m[0]+beatIdx)*w+offset*i-noteList[i].width()/2, self.label_beat.y()+self.label_beat.height()/2-noteList[i].height()/2)  # need modify
                 beatIdx += 1
 
             barIdx += 1
