@@ -13,7 +13,6 @@ class Bar:
         l=len(rawNoteList)/self.measure[0]
         # print(l)
         if l<1:
-            l=1
             #1->1000으로 바꿔주는 과정이 필요. 우선 전체 길이를 1/l 배 만큼 늘려야한다.
             #기본적으로 한개 들어간다고 생각하고, 0인 노트를 1/l-1 개 만큼 복사해서 넣어준다고 생각하자. 
             newRawNoteList=list()
@@ -25,6 +24,7 @@ class Bar:
                     N.setZero()
                     newRawNoteList.append(N)
             rawNoteList=newRawNoteList
+            l=1
         idxOffset=1
         cnt=0
         beatListIdx=0
@@ -80,7 +80,7 @@ class Note:
         self.GOGOStart=copy.deepcopy(Note.GOGO)
         self.balloon=copy.deepcopy(Note.balloon)
     def setZero(self):
-        self.noteParam=0
+        self.noteParam='0'
     def getNote(self):
         return int(self.noteParam)
     def __repr__(self):
