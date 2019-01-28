@@ -123,28 +123,33 @@ class MainWindow(QMainWindow, form_class):
 
     def push_load_clicked(self):
         fname = QFileDialog.getOpenFileName(self)[0]
-        self.score = Score.TJA(fname)
-        track = self.score.track_list[0]
-        barIdx=0
+        score = Score.TJA(fname)
+        track = score.track_list[0]
+        barIdx = 0
+
         for bar in track.bar_list:
             m = bar.measure
-            bList = [self.makeLabelBeat() for _ in range(m[0]-1)]
-            bList.append(self.makeLabelBeat(end=True))
+            beatList = [self.makeLabelBeat() for _ in range(m[0]-1)]
+            beatList.append(self.makeLabelBeat(end=True))
             beatIdx = 0
+
             for beat in bar.beat_list:
-                w = bList[beatIdx].width()
-                h = bList[beatIdx].height()
-                split = beat.splitParam
-                offset = bList[0].width() // split
-                nList=list()
+                w, h = beatList[beatIdx].width(), beatList[beatIdx].height()
+                numSplit = beat.splitParam
+                offset = beatList[0].width() // numSplit
+                noteList=list()
                 for note in beat.note_list:
                     N=self.makeLabelNote(note.getNote())
                     N.setNote(note)
-                    nList.append(N)
+                    noteList.append(N)
 
-                for i in range(len(nList)):
-                    nList[i].move((1+beatIdx)*w+offset*i-nList[i].width()/2, self.label_beat.height()/2)  # need modify
+                for i in range(len(noteList)):
+                    noteList[i].move(w+(barIdx*m[0]+beatIdx)*w+offset*i-noteList[i].width()/2, self.label_beat.height()/2)  # need modify
                 beatIdx += 1
+
+            barIdx += 1
+
+        self.score = score
 
 
             
