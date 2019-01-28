@@ -39,7 +39,7 @@ class MainWindow(QMainWindow, form_class):
 
     def makeLabelNote(self,note):
         # make label_don
-        label = QLabel(self.scrollAreaWidgetContents)
+        label = NoteLabel(self.scrollAreaWidgetContents)
         if note == 0:
             pass
         elif note==1:
@@ -125,6 +125,7 @@ class MainWindow(QMainWindow, form_class):
         fname = QFileDialog.getOpenFileName(self)[0]
         self.score = Score.TJA(fname)
         track = self.score.track_list[0]
+        barIdx=0
         for bar in track.bar_list:
             m = bar.measure
             bList = [self.makeLabelBeat() for _ in range(m[0]-1)]
@@ -135,7 +136,12 @@ class MainWindow(QMainWindow, form_class):
                 h = bList[beatIdx].height()
                 split = beat.splitParam
                 offset = bList[0].width() // split
-                nList = [self.makeLabelNote(note.getNote()) for note in beat.note_list]
+                nList=list()
+                for note in beat.note_list:
+                    N=self.makeLabelNote(note.getNote())
+                    N.setNote(note)
+                    nList.append(N)
+
                 for i in range(len(nList)):
                     nList[i].move((1+beatIdx)*w+offset*i-nList[i].width()/2, self.label_beat.height()/2)  # need modify
                 beatIdx += 1
@@ -162,6 +168,15 @@ class MainWindow(QMainWindow, form_class):
         
         # print(self.scrollAreaWidgetContents.x(), self.scrollAreaWidgetContents.y(), self.scrollAreaWidgetContents.width(), self.scrollAreaWidgetContents.height())
         return label
+
+class NoteLabel(QLabel):
+    def __init__(self,parent):
+        super().__init__(parent)
+        self.note=Score.Note()
+    def setNote(self,Note):
+        self.note.setNote(Note)
+
+
 
     
 class ClickableLabel(QLabel):
