@@ -54,6 +54,7 @@ class MainWindow(QMainWindow, form_class):
         elif note==4:
             noteImage= QPixmap(':/res/res/note/img_kat_big.png')
         else:
+            noteImage= QPixmap(':/res/res/note/img_don.png') # will be implemented
             pass  # need other notes (number 5,6,7,8,9)
         
         if note != 0:
