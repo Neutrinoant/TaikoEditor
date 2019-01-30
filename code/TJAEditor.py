@@ -42,6 +42,7 @@ class MainWindow(QMainWindow, form_class):
     def makeLabelNote(self,note):
         # make label_don
         label = NoteLabel(self.scrollAreaWidgetContents)
+        noteImage = None
         if note == 0:
             pass
         elif note==1:
@@ -52,19 +53,25 @@ class MainWindow(QMainWindow, form_class):
             noteImage= QPixmap(':/res/res/note/img_don_big.png')
         elif note==4:
             noteImage= QPixmap(':/res/res/note/img_kat_big.png')
-        elif note==5:
-            rendaHead = QPixmap(':/res/res/note/img_renda_head.png')
+        elif note==7:
+            noteImage = QPixmap(':/res/res/note/img_balloon.png')
+        elif note==8:
+            pass
         else:
             pass  # need other notes (number 5,6,7,8,9)
-        
-        if note != 0:
-            label.setPixmap(noteImage)
 
         beatSize=[self.label_beat.height(),self.label_beat.height()]
-        if note==1 or note==2:
-            label.setGeometry(0,0,beatSize[0]//3,beatSize[1]//3)
-        else:
-            label.setGeometry(0,0,beatSize[0]//2,beatSize[1]//2)
+        if note>0 and note!=8:
+            if note==1 or note==2:
+                noteImage = noteImage.scaled(beatSize[0]//3, beatSize[1]//3, transformMode=Qt.SmoothTransformation)
+            elif note==3 or note==4:
+                noteImage = noteImage.scaled(beatSize[0]//2, beatSize[1]//2, transformMode=Qt.SmoothTransformation)
+            elif note==7:
+                noteImage = noteImage.scaled(1, beatSize[1]//3, transformMode=Qt.SmoothTransformation,\
+                                            aspectRatioMode=Qt.KeepAspectRatioByExpanding)
+            label.setPixmap(noteImage)
+            label.setFixedSize(noteImage.width(), noteImage.height())
+
         label.setScaledContents(True)
         label.show()
         return label
@@ -103,29 +110,29 @@ class MainWindow(QMainWindow, form_class):
     #     self.donIndex_list.pop(i)
     #     self.don_list.pop(i).deleteLater()
 
-    def push_addBeat_clicked(self):
-        # make new img_beat
-        beatImage = QPixmap(':/res/res/track/beat(48x50).png')
-        label = ClickableLabel(self.scrollAreaWidgetContents)
-        label.setBeatInfo(self.beatInfo)
-        label.setPixmap(beatImage)
-        label.setScaledContents(True)
-        label.setFixedSize(self.scrollArea.height()*2/3, self.scrollArea.height()*2/3)
-        label.lower()
-        print(label.width(), label.height())
+    # def push_addBeat_clicked(self):
+    #     # make new img_beat
+    #     beatImage = QPixmap(':/res/res/track/beat(48x50).png')
+    #     label = ClickableLabel(self.scrollAreaWidgetContents)
+    #     label.setBeatInfo(self.beatInfo)
+    #     label.setPixmap(beatImage)
+    #     label.setScaledContents(True)
+    #     label.setFixedSize(self.scrollArea.height()*2/3, self.scrollArea.height()*2/3)
+    #     label.lower()
+    #     print(label.width(), label.height())
 
-        # insert new img_beat in layout and managable list
-        self.horizontalLayout.addWidget(label)
-        self.beatInfo['beats'].append(label)
+    #     # insert new img_beat in layout and managable list
+    #     self.horizontalLayout.addWidget(label)
+    #     self.beatInfo['beats'].append(label)
 
-    def push_delBeat_clicked(self):
-        # delete highlighted beat
-        if self.beatInfo['hIndex'] < 0:
-            return
-        self.beatInfo['beats'].pop(self.beatInfo['hIndex'])
-        self.horizontalLayout.takeAt(self.beatInfo['hIndex']).widget().deleteLater()
-        print(self.beatInfo['hIndex'])
-        self.beatInfo['hIndex'] = -1
+    # def push_delBeat_clicked(self):
+    #     # delete highlighted beat
+    #     if self.beatInfo['hIndex'] < 0:
+    #         return
+    #     self.beatInfo['beats'].pop(self.beatInfo['hIndex'])
+    #     self.horizontalLayout.takeAt(self.beatInfo['hIndex']).widget().deleteLater()
+    #     print(self.beatInfo['hIndex'])
+    #     self.beatInfo['hIndex'] = -1
 
 
     def push_load_clicked(self):
@@ -161,7 +168,7 @@ class MainWindow(QMainWindow, form_class):
                     tempnoteList.append(N)
 
                 for i in range(len(tempnoteList)):
-                    tempnoteList[i].move(w+(barIdx*m[0]+beatIdx)*w+offset*i-tempnoteList[i].width()/2, self.label_beat.y()+self.label_beat.height()/2-tempnoteList[i].height()/2)  # need modify
+                    tempnoteList[i].move(w+(barIdx*m[0]+beatIdx)*w+offset*i-tempnoteList[i].height()/2, self.label_beat.y()+self.label_beat.height()/2-tempnoteList[i].height()/2)  # need modify
                 beatIdx += 1
                 self.noteList += tempnoteList
 
