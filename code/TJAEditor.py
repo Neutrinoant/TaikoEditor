@@ -15,28 +15,27 @@ class MainWindow(QMainWindow, form_class):
         super().__init__()
         self.setupUi(self)
         
-        self.donIndex_list = []
-        self.don_list = []
+        # self.donIndex_list = []
+        # self.don_list = []
 
-        self.push_changeOrder.clicked.connect(self.push_changeOrder_clicked)
-        self.push_add.clicked.connect(self.push_add_clicked)
-        self.push_del.clicked.connect(self.push_del_clicked)
-        self.push_addBeat.clicked.connect(self.push_addBeat_clicked)
-        self.push_delBeat.clicked.connect(self.push_delBeat_clicked)
+        # self.push_changeOrder.clicked.connect(self.push_changeOrder_clicked)
+        # self.push_add.clicked.connect(self.push_add_clicked)
+        # self.push_del.clicked.connect(self.push_del_clicked)
+        # self.push_addBeat.clicked.connect(self.push_addBeat_clicked)
+        # self.push_delBeat.clicked.connect(self.push_delBeat_clicked)
+        # self.MAX_WIDTH = self.label_beat.width()
+        # self.beatInfo = {'beats':[], 'hIndex':-1}
 
         self.label_beat.setFixedSize(self.scrollArea.height()*2/3,self.scrollArea.height()*2/3)
         self.horizontalLayout.addStretch(1)
-        self.MAX_WIDTH = self.label_beat.width()
-
-        self.beatInfo = {'beats':[], 'hIndex':-1}
 
         self.push_load.clicked.connect(self.push_load_clicked)
         # print(self.label_beat.width())
 
 
-    def push_changeOrder_clicked(self):
-        self.label_don3.raise_()
-        self.label_don3.stackUnder(self.label_don2)
+    # def push_changeOrder_clicked(self):
+    #     self.label_don3.raise_()
+    #     self.label_don3.stackUnder(self.label_don2)
 
     def makeLabelNote(self,note):
         # make label_don
@@ -51,6 +50,8 @@ class MainWindow(QMainWindow, form_class):
             noteImage= QPixmap(':/res/res/note/img_don_big.png')
         elif note==4:
             noteImage= QPixmap(':/res/res/note/img_kat_big.png')
+        elif note==5:
+            rendaHead = QPixmap(':/res/res/note/img_renda_head.png')
         else:
             pass  # need other notes (number 5,6,7,8,9)
         
@@ -66,39 +67,39 @@ class MainWindow(QMainWindow, form_class):
         label.show()
         return label
 
-    def push_add_clicked(self):
-        if len(self.donIndex_list) > self.MAX_WIDTH//10:
-            return
-        while True:
-            i = random.randrange(0, self.MAX_WIDTH, step=10)
-            if i not in self.donIndex_list:
-                break
+    # def push_add_clicked(self):
+    #     if len(self.donIndex_list) > self.MAX_WIDTH//10:
+    #         return
+    #     while True:
+    #         i = random.randrange(0, self.MAX_WIDTH, step=10)
+    #         if i not in self.donIndex_list:
+    #             break
 
-        # make new img_don
-        newLabel = self.makeLabelDon()
-        imgW, imgH = self.label_beat.height()//3, self.label_beat.height()//3
-        imgX, imgY = self.label_beat.pos().x()+i-imgW//2, \
-                    self.label_beat.pos().y()+self.label_beat.height()//2-imgH//2
-        newLabel.setGeometry(QRect(imgX, imgY, imgW, imgH))
-        newLabel.setObjectName('label_don_'+str(i))
+    #     # make new img_don
+    #     newLabel = self.makeLabelDon()
+    #     imgW, imgH = self.label_beat.height()//3, self.label_beat.height()//3
+    #     imgX, imgY = self.label_beat.pos().x()+i-imgW//2, \
+    #                 self.label_beat.pos().y()+self.label_beat.height()//2-imgH//2
+    #     newLabel.setGeometry(QRect(imgX, imgY, imgW, imgH))
+    #     newLabel.setObjectName('label_don_'+str(i))
 
-        # insert new img_don in sorted list
-        donIndex = bisect.bisect_left(self.donIndex_list, i)
-        self.donIndex_list.insert(donIndex, i)
-        self.don_list.insert(donIndex, newLabel)
+    #     # insert new img_don in sorted list
+    #     donIndex = bisect.bisect_left(self.donIndex_list, i)
+    #     self.donIndex_list.insert(donIndex, i)
+    #     self.don_list.insert(donIndex, newLabel)
 
-        # set z-value of new img_don
-        newLabel.raise_()
-        if donIndex > 0:
-            newLabel.stackUnder(self.don_list[donIndex-1])
-        newLabel.show()
+    #     # set z-value of new img_don
+    #     newLabel.raise_()
+    #     if donIndex > 0:
+    #         newLabel.stackUnder(self.don_list[donIndex-1])
+    #     newLabel.show()
 
-    def push_del_clicked(self):
-        if not self.donIndex_list:
-            return
-        i = random.randrange(0, len(self.donIndex_list))
-        self.donIndex_list.pop(i)
-        self.don_list.pop(i).deleteLater()
+    # def push_del_clicked(self):
+    #     if not self.donIndex_list:
+    #         return
+    #     i = random.randrange(0, len(self.donIndex_list))
+    #     self.donIndex_list.pop(i)
+    #     self.don_list.pop(i).deleteLater()
 
     def push_addBeat_clicked(self):
         # make new img_beat
@@ -127,6 +128,8 @@ class MainWindow(QMainWindow, form_class):
 
     def push_load_clicked(self):
         fname = QFileDialog.getOpenFileName(self)[0]
+        if fname == '':
+            return
         score = Score.TJA(fname)
         track = score.track_list[0]
         barIdx = 0
@@ -148,7 +151,8 @@ class MainWindow(QMainWindow, form_class):
                     noteList.append(N)
 
                 for i in range(len(noteList)):
-                    noteList[i].move(w+(barIdx*m[0]+beatIdx)*w+offset*i-noteList[i].width()/2, self.label_beat.y()+self.label_beat.height()/2-noteList[i].height()/2)  # need modify
+                    noteList[i].move(w+(barIdx*m[0]+beatIdx)*w+offset*i-noteList[i].width()/2, \
+                            self.label_beat.y()+self.label_beat.height()/2-noteList[i].height()/2)
                 beatIdx += 1
 
             barIdx += 1
