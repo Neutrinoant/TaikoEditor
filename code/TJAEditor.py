@@ -215,6 +215,7 @@ class NoteLabel(QLabel):
         self.note.setNote(Note)
     
 class BeatLabel(QLabel):
+    highlightBeatLabel = None
     def __init__(self, parent):
         super().__init__(parent)
         self.mousePressEvent = self.beatClicked
