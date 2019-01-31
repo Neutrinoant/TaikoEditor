@@ -2,11 +2,16 @@ import copy
 import re
 import codecs
 import sys
+from CustomLabel import NoteLabel,BeatLabel
 
 class Bar:
     def __init__(self,measure):
         self.measure=copy.deepcopy(measure)
         self.beat_list=[Beat(parent=self) for _ in range(measure[0])]
+    def changeMeasaure(self,measure,idx):
+        #분자를 바꿀거면 1 분모를 바꿀거면 2
+        self.measure[idx-1]=copy.deepcopy(measure)
+        self.beat_list=self.beat_list[0:measure[0]]
     def setNoteList(self,rawNoteList):
         #10110101 같은게 들어온다. 8칸이고 메져가 4/4 면 2칸씩 나눈다.
         # print(rawNoteList) 
@@ -76,6 +81,7 @@ class Note:
         self.GOGO=GOGO #True는 고고중 False는 아님
         self.balloon=balloon # 풍선 갯수
         self.parentBeat=parent
+        self.label=None
     def setNote(self,Note):
         self.noteParam=copy.deepcopy(Note.noteParam)
         self.BPM=copy.deepcopy(Note.BPM)
@@ -108,8 +114,8 @@ class Track:
         print(self)
         for bar in self.bar_list:
             print(bar)
-    def toTJAForm(self):
-        s=str()
+    # def toTJAForm(self):
+    #     s=str()
     def __repr__(self):
         return str([self.COURSE,self.LEVEL,self.SCOREINIT,self.SCOREDIFF,self.STYLE])
 
