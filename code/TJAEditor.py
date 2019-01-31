@@ -137,7 +137,9 @@ class MainWindow(QMainWindow, form_class):
                 offset = bList[0].width() // split
                 nList = [self.makeLabelNote(note.getNote()) for note in beat.note_list]
                 for i in range(len(nList)):
+                    # pass
                     nList[i].move(xpos+offset*i, ypos)  # need modify
+                    # print(offset)
                 beatIdx += 1
 
 
@@ -158,7 +160,7 @@ class MainWindow(QMainWindow, form_class):
 
         # insert new img_beat in layout and managable list
         self.horizontalLayout.addWidget(label)
-        print(label.x(), label.y())
+        # print(label.x(), label.y())
         return label
 
     
