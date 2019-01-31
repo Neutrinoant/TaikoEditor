@@ -9,6 +9,7 @@ import copy
 import Score
 
 form_class = uic.loadUiType("mainWindow.ui")[0]
+highlightBeatLabel = None
 
 class MainWindow(QMainWindow, form_class):
     def __init__(self):
@@ -149,31 +150,37 @@ class MainWindow(QMainWindow, form_class):
 
         self.noteList=list()
         self.beatList=list()
-
+        self.measureList=list()
+        
+        rendaInfo = {'flag':False, 'note':0, 'barIdx':0, 'splitIdx':0}
         barIdx = 0
 
         for bar in track.bar_list:
             m = bar.measure
-            self.beatList = [self.makeLabelBeat() for _ in range(m[0]-1)]
-            self.beatList.append(self.makeLabelBeat(end=True))
+            tempBeatList = [self.makeLabelBeat() for _ in range(m[0]-1)]
+            tempBeatList.append(self.makeLabelBeat(end=True))
             beatIdx = 0
 
             for beat in bar.beat_list:
-                w, h = self.beatList[beatIdx].width(), self.beatList[beatIdx].height()
-                numSplit = beat.splitParam
-                offset = self.beatList[0].width() // numSplit
-                tempnoteList=list()
+                w, h = tempBeatList[beatIdx].width(), tempBeatList[beatIdx].height()
+                splitNum = beat.splitParam
+                offset = tempBeatList[0].width() // splitNum
+                tempNoteList=list()
+
                 for note in beat.note_list:
                     N=self.makeLabelNote(note.getNote())
                     N.setNote(note)
-                    tempnoteList.append(N)
+                    tempNoteList.append(N)
 
-                for i in range(len(tempnoteList)):
-                    tempnoteList[i].move(w+(barIdx*m[0]+beatIdx)*w+offset*i-tempnoteList[i].height()/2, self.label_beat.y()+self.label_beat.height()/2-tempnoteList[i].height()/2)  # need modify
+                for i in range(len(tempNoteList)):
+                    tempNoteList[i].move(w+(barIdx*m[0]+beatIdx)*w+offset*i-tempNoteList[i].height()/2, self.label_beat.y()+self.label_beat.height()/2-tempNoteList[i].height()/2)  # need modify
+                
                 beatIdx += 1
-                self.noteList += tempnoteList
+                self.noteList += tempNoteList
 
             barIdx += 1
+            self.beatList.append(tempBeatList)
+            self.measureList.append(m)
 
         self.score = score
 
@@ -186,7 +193,7 @@ class MainWindow(QMainWindow, form_class):
             beatImage = QPixmap(':/res/res/track/beat(48x50).png')
         else:
             beatImage = QPixmap(':/res/res/track/beat_end(48x50).png')
-        label = QLabel(self.scrollAreaWidgetContents)
+        label = BeatLabel(self.scrollAreaWidgetContents)                   # 후에 BeatLabe class 만들어야함.
         label.setPixmap(beatImage)
         label.setScaledContents(True)
         label.setFixedSize(self.scrollArea.height()*2/3, self.scrollArea.height()*2/3)
@@ -206,45 +213,27 @@ class NoteLabel(QLabel):
         self.note=Score.Note()
     def setNote(self,Note):
         self.note.setNote(Note)
-
-
-
     
-# class ClickableLabel(QLabel):
-#     def __init__(self, parent):
-#         super().__init__(parent)
-#         self.data = dict()
-#         self.mouseReleaseEvent = self.beatClicked
-#         self.highlighted = False
+class BeatLabel(QLabel):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.mousePressEvent = self.beatClicked
+        self.highlighted = False
 
-#     def setBeatInfo(self, beatInfo):
-#         self.data['beatInfo'] = beatInfo
-#         self.data['myIndex'] = len(beatInfo['beats'])
+    def beatClicked(self, event):
+        global highlightBeatLabel
+        if highlightBeatLabel != None:
+            # disable other highlighted beat
+            highlightBeatLabel.disableHighlight()
 
-#     def beatClicked(self, event):
-#         print(event.x(), event.y())
-#         if 'beatInfo' not in self.data:
-#             pass
+        # highlight this label
+        self.setPixmap(QPixmap(':/res/res/track/beat(48x50)_highlighted.png'))
+        self.highlighted = True
+        highlightBeatLabel = self
 
-#         b = self.data['beatInfo']['beats']
-#         i = self.data['beatInfo']['hIndex']
-
-#         if i == self.data['myIndex']:
-#             # disable this beat
-#             self.disableHighlight()
-#             self.data['hIndex'] = -1
-#         else:
-#             # disable other highlighted beat
-#             if i >= 0:
-#                 b[i].disableHighlight()
-#             # highlight this and mark
-#             self.setPixmap(QPixmap(':/res/res/track/beat(48x50)_highlighted.png'))
-#             self.data['beatInfo']['hIndex'] = self.data['myIndex']
-#             self.highlighted = True
-
-#     def disableHighlight(self):
-#         self.setPixmap(QPixmap(':/res/res/track/beat(48x50).png'))
-#         self.highlighted = False
+    def disableHighlight(self):
+        self.setPixmap(QPixmap(':/res/res/track/beat(48x50).png'))
+        self.highlighted = False
 
 
 
