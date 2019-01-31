@@ -6,14 +6,13 @@ import sys
 class Bar:
     def __init__(self,measure):
         self.measure=copy.deepcopy(measure)
-        self.beat_list=[Beat() for _ in range(measure[0])]
+        self.beat_list=[Beat(parent=self) for _ in range(measure[0])]
     def setNoteList(self,rawNoteList):
         #10110101 같은게 들어온다. 8칸이고 메져가 4/4 면 2칸씩 나눈다.
         # print(rawNoteList) 
         l=len(rawNoteList)/self.measure[0]
         # print(l)
         if l<1:
-            l=1
             #1->1000으로 바꿔주는 과정이 필요. 우선 전체 길이를 1/l 배 만큼 늘려야한다.
             #기본적으로 한개 들어간다고 생각하고, 0인 노트를 1/l-1 개 만큼 복사해서 넣어준다고 생각하자. 
             newRawNoteList=list()
@@ -25,6 +24,7 @@ class Bar:
                     N.setZero()
                     newRawNoteList.append(N)
             rawNoteList=newRawNoteList
+            l=1
         idxOffset=1
         cnt=0
         beatListIdx=0
@@ -46,9 +46,10 @@ class Bar:
 
 
 class Beat:
-    def __init__(self,split=4):
+    def __init__(self,parent=None,split=4):
         self.note_list=list()
         self.splitParam=int(split) # 한 박자를 몇개로 쪼갤것인가
+        self.parentBar=parent
     def setSplit(self,split):
         self.splitParam=split
     def pushNote(self,note):
@@ -56,9 +57,10 @@ class Beat:
             print("오류:노트넘침")
             print(self.splitParam)
             quit()
-        N=Note()
-        N.setNote(note)
-        self.note_list.append(N)
+        note.setParent(self)
+        self.note_list.append(note)
+    def getParent(self):
+        return self.parentBar
     def __repr__(self):
         s=str()
         for note in self.note_list:
@@ -67,25 +69,30 @@ class Beat:
 
 
 class Note:
-    def __init__(self,BPM=0,noteParam=0,scroll=1.0,balloon=None,GOGO=False):
+    def __init__(self,parent=None,BPM=0,noteParam='0',scroll=1.0,balloon=None,GOGO=False):
         self.noteParam=noteParam #0=쉼표 1=동 2=캇 3:큰동 4:큰캇 5:단무지
         self.BPM=BPM
         self.scroll=scroll
         self.GOGO=GOGO #True는 고고중 False는 아님
         self.balloon=balloon # 풍선 갯수
+        self.parentBeat=parent
     def setNote(self,Note):
         self.noteParam=copy.deepcopy(Note.noteParam)
         self.BPM=copy.deepcopy(Note.BPM)
         self.scroll=copy.deepcopy(Note.scroll)
         self.GOGOStart=copy.deepcopy(Note.GOGO)
         self.balloon=copy.deepcopy(Note.balloon)
+        self.parentBeat=Note.parentBeat
     def setZero(self):
-        self.noteParam=0
+        self.noteParam='0'
     def getNote(self):
         return int(self.noteParam)
+    def getParent(self):
+        return self.parentBeat
+    def setParent(self,parent):
+        self.parentBeat=parent
     def __repr__(self):
         return self.noteParam
-
 
 class Track:
     def __init__(self):
@@ -272,16 +279,16 @@ class TJA:
                         for note in line:
                             if note==',':
                                 if len(tempList)==0:
-                                    tempList.append(Note(curBPM,'0',curSCROLL,None,curGOGO))
+                                    tempList.append(Note(None,curBPM,'0',curSCROLL,None,curGOGO))
                                 B=Bar(curMEASURE)
                                 B.setNoteList(tempList)
                                 self.track_list[curTrIdx].pushBar(B)
                                 tempList=list()
                             elif note=='7':
-                                tempList.append(Note(curBPM,note,curSCROLL,curBalloonList[balloonIdx],curGOGO))
+                                tempList.append(Note(None,curBPM,note,curSCROLL,curBalloonList[balloonIdx],curGOGO))
                                 balloonIdx=balloonIdx+1
                             else:
-                                tempList.append(Note(curBPM,note,curSCROLL,None,curGOGO))
+                                tempList.append(Note(None,curBPM,note,curSCROLL,None,curGOGO))
 
 
     def newTrack(self):
@@ -343,11 +350,11 @@ class TJA:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        sys.stderr.write("Usage: %s <rawData file>\n" % sys.argv[0])
-        sys.exit(1)
+    # if len(sys.argv) < 2:
+    #     sys.stderr.write("Usage: %s <rawData file>\n" % sys.argv[0])
+    #     sys.exit(1)
 
-    fname = sys.argv[1]
-    
+    # fname = sys.argv[1]
+    fname="test.tja"
     T=TJA(fname)
     T.print()

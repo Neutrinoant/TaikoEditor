@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>907</width>
-    <height>744</height>
+    <width>827</width>
+    <height>642</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -69,7 +69,7 @@
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>170</y>
+      <y>210</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -82,7 +82,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>170</y>
+      <y>210</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -94,10 +94,10 @@
    <widget class="QScrollArea" name="scrollArea">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>20</y>
-      <width>351</width>
-      <height>131</height>
+      <x>360</x>
+      <y>40</y>
+      <width>391</width>
+      <height>161</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -105,6 +105,18 @@
       <horstretch>0</horstretch>
       <verstretch>0</verstretch>
      </sizepolicy>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOn</enum>
+    </property>
+    <property name="sizeAdjustPolicy">
+     <enum>QAbstractScrollArea::AdjustIgnored</enum>
     </property>
     <property name="widgetResizable">
      <bool>true</bool>
@@ -114,15 +126,18 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>48</width>
-       <height>50</height>
+       <width>389</width>
+       <height>138</height>
       </rect>
      </property>
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="spacing">
@@ -169,7 +184,7 @@
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>220</y>
+      <y>260</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -182,7 +197,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>220</y>
+      <y>260</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -213,14 +228,42 @@
    <widget class="QPushButton" name="push_load">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>380</y>
-      <width>75</width>
-      <height>23</height>
+      <x>440</x>
+      <y>390</y>
+      <width>93</width>
+      <height>28</height>
      </rect>
     </property>
     <property name="text">
      <string>load</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_beat_2">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>240</y>
+      <width>48</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="track.qrc">:/res/res/track/beat_end(48x50).png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>
@@ -229,8 +272,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>907</width>
-     <height>21</height>
+     <width>827</width>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
