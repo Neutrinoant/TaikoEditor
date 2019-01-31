@@ -7,6 +7,7 @@ import bisect
 import random
 import copy
 import Score
+from CustomLabel import NoteLabel,BeatLabel
 
 form_class = uic.loadUiType("mainWindow.ui")[0]
 highlightBeatLabel = None
@@ -206,34 +207,6 @@ class MainWindow(QMainWindow, form_class):
         
         # print(self.scrollAreaWidgetContents.x(), self.scrollAreaWidgetContents.y(), self.scrollAreaWidgetContents.width(), self.scrollAreaWidgetContents.height())
         return label
-
-class NoteLabel(QLabel):
-    def __init__(self,parent):
-        super().__init__(parent)
-        self.note=Score.Note()
-    def setNote(self,Note):
-        self.note.setNote(Note)
-    
-class BeatLabel(QLabel):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.mousePressEvent = self.beatClicked
-        self.highlighted = False
-
-    def beatClicked(self, event):
-        global highlightBeatLabel
-        if highlightBeatLabel != None:
-            # disable other highlighted beat
-            highlightBeatLabel.disableHighlight()
-
-        # highlight this label
-        self.setPixmap(QPixmap(':/res/res/track/beat(48x50)_highlighted.png'))
-        self.highlighted = True
-        highlightBeatLabel = self
-
-    def disableHighlight(self):
-        self.setPixmap(QPixmap(':/res/res/track/beat(48x50).png'))
-        self.highlighted = False
 
 
 
