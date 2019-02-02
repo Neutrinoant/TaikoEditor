@@ -55,6 +55,9 @@ class Beat:
         self.note_list=list()
         self.splitParam=int(split) # 한 박자를 몇개로 쪼갤것인가
         self.parentBar=parent
+        self.label=None
+    def setLabel(self,Label):
+        self.label=Label
     def setSplit(self,split):
         self.splitParam=split
     def pushNote(self,note):
@@ -89,6 +92,8 @@ class Note:
         self.GOGOStart=copy.deepcopy(Note.GOGO)
         self.balloon=copy.deepcopy(Note.balloon)
         self.parentBeat=Note.parentBeat
+    def setLabel(self,Label):
+        self.label=Label
     def setZero(self):
         self.noteParam='0'
     def getNote(self):

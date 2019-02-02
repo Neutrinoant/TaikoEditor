@@ -139,6 +139,7 @@ class MainWindow(QMainWindow, form_class):
 
 
     def push_load_clicked(self):
+        #이부분 다시 고쳐야 함
         fname = QFileDialog.getOpenFileName(self)[0]
         if fname == '':
             return
