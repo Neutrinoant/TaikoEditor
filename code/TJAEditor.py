@@ -34,6 +34,7 @@ class MainWindow(QMainWindow, form_class):
         self.push_load.clicked.connect(self.push_load_clicked)
         self.noteList=list()
         self.beatList=list()
+        self.score=Score.TJA()
         # print(self.label_beat.width())
 
 
@@ -80,52 +81,70 @@ class MainWindow(QMainWindow, form_class):
         return label
 
     def push_load_clicked(self):
+        noteIdx=0
+        beatIdx=0
+        barIdx=0
         fname = QFileDialog.getOpenFileName(self)[0]
         if fname == '':
             return
+        self.score.clearLabel()
         score = Score.TJA(fname)
         track = score.track_list[0]
-        for note in self.noteList:
-            note.deleteLater()
-        for beat in self.beatList:
-            beat.deleteLater()
-
-        self.noteList=list()
-        self.beatList=list()
-        self.measureList=list()
-        
-        rendaInfo = {'flag':False, 'note':0, 'barIdx':0, 'splitIdx':0}
-        barIdx = 0
-
         for bar in track.bar_list:
-            m = bar.measure
-            tempBeatList = [self.makeLabelBeat() for _ in range(m[0]-1)]
-            tempBeatList.append(self.makeLabelBeat(end=True))
-            beatIdx = 0
-
+            m=bar.measure[0]
             for beat in bar.beat_list:
-                w, h = tempBeatList[beatIdx].width(), tempBeatList[beatIdx].height()
-                splitNum = beat.splitParam
-                offset = tempBeatList[0].width() // splitNum
-                tempNoteList=list()
-
+                beat.label=self.makeLabelBeat()
+                w,h=beat.label.width(),beat.label.height()
+                offset=w//beat.splitParam
                 for note in beat.note_list:
                     N=self.makeLabelNote(note.getNote())
-                    N.setNote(note)
-                    tempNoteList.append(N)
+                    N.move(w+(barIdx*m+beatIdx)*w+offset*noteIdx-N.height()/2, self.label_beat.y()+self.label_beat.height()/2-N.height()/2)
+                    note.label=N
+                    noteIdx+=1
+                beatIdx+=1
+            barIdx+=1
+        self.score=score
+        # for note in self.noteList:
+        #     note.deleteLater()
+        # for beat in self.beatList:
+        #     beat.deleteLater()
 
-                for i in range(len(tempNoteList)):
-                    tempNoteList[i].move(w+(barIdx*m[0]+beatIdx)*w+offset*i-tempNoteList[i].height()/2, self.label_beat.y()+self.label_beat.height()/2-tempNoteList[i].height()/2)  # need modify
+        # self.noteList=list()
+        # self.beatList=list()
+        # self.measureList=list()
+        
+        # rendaInfo = {'flag':False, 'note':0, 'barIdx':0, 'splitIdx':0}
+        # barIdx = 0
+
+        # for bar in track.bar_list:
+        #     m = bar.measure
+        #     tempBeatList = [self.makeLabelBeat() for _ in range(m[0]-1)]
+        #     tempBeatList.append(self.makeLabelBeat(end=True))
+        #     beatIdx = 0
+
+        #     for beat in bar.beat_list:
+        #         w, h = tempBeatList[beatIdx].width(), tempBeatList[beatIdx].height()
+        #         splitNum = beat.splitParam
+        #         offset = tempBeatList[0].width() // splitNum
+        #         tempNoteList=list()
+
+        #         for note in beat.note_list:
+        #             N=self.makeLabelNote(note.getNote())
+        #             N.setNote(note)
+        #             tempNoteList.append(N)
+
+        #         for i in range(len(tempNoteList)):
+        #             tempNoteList[i].move(w+(barIdx*m[0]+beatIdx)*w+offset*i-tempNoteList[i].height()/2, self.label_beat.y()+self.label_beat.height()/2-tempNoteList[i].height()/2)  # need modify
                 
-                beatIdx += 1
-                self.noteList += tempNoteList
+        #         beatIdx += 1
+        #         self.noteList += tempNoteList
 
-            barIdx += 1
-            self.beatList.append(tempBeatList)
-            self.measureList.append(m)
+        #     barIdx += 1
+        #     self.beatList.append(tempBeatList)
+        #     self.measureList.append(m)
 
-        self.score = score
-
+        # self.score = score
+        
 
             
 

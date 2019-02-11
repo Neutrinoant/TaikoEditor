@@ -55,6 +55,7 @@ class Beat:
         self.note_list=list()
         self.splitParam=int(split) # 한 박자를 몇개로 쪼갤것인가
         self.parentBar=parent
+        self.label=None
     def setSplit(self,split):
         self.splitParam=split
     def pushNote(self,note):
@@ -303,6 +304,8 @@ class TJA:
         print(self)
         for Tr in self.track_list:
             Tr.print()
+    def clearLabel(self):
+        pass
 
     
     # def toTJAForm(self):
