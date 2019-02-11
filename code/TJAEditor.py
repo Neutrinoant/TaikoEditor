@@ -92,6 +92,7 @@ class MainWindow(QMainWindow, form_class):
         track = score.track_list[0]
         for bar in track.bar_list:
             m=bar.measure[0]
+            beatIdx=0
             for i in range(len(bar.beat_list)):
                 beat=bar.beat_list[i]
                 if i==len(bar.beat_list)-1:
@@ -100,6 +101,7 @@ class MainWindow(QMainWindow, form_class):
                     beat.label=self.makeLabelBeat()
                 w,h=beat.label.width(),beat.label.height()
                 offset=w//beat.splitParam
+                noteIdx=0
                 for note in beat.note_list:
                     N=self.makeLabelNote(note.getNote())
                     N.move(w+(barIdx*m+beatIdx)*w+offset*noteIdx-N.height()/2, self.label_beat.y()+self.label_beat.height()/2-N.height()/2)
