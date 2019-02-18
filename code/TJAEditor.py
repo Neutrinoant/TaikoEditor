@@ -68,9 +68,9 @@ class MainWindow(QMainWindow, form_class):
 
         beatSize=[self.label_beat.height(),self.label_beat.height()]
         if note>0 and note!=8:
-            if note==1 or note==2:
+            if note in [1,2,5]:
                 noteImage = noteImage.scaled(beatSize[0]//3, beatSize[1]//3, transformMode=Qt.SmoothTransformation)
-            elif note==3 or note==4:
+            elif note in [3,4,6]:
                 noteImage = noteImage.scaled(beatSize[0]//2, beatSize[1]//2, transformMode=Qt.SmoothTransformation)
             elif note==7:
                 noteImage = noteImage.scaled(1, beatSize[1]//3, transformMode=Qt.SmoothTransformation,\

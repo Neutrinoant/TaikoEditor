@@ -9,6 +9,18 @@ class NoteLabel(QLabel):
         self.note=Score.Note()
     def setNote(self,Note):
         self.note=Note
+    #start: left-top of first note, End: left-top of last note
+    def setRenda(self,rendaStart,rendaEnd):
+        if self.note.getNote()==5:
+            head = QPixmap(':/res/res/note/img_renda_head.png')
+            mid = QPixmap(':/res/res/note/img_renda_middle.png')
+            tail = QPixmap(':/res/res/note/img_renda_tail.png')
+        else:  # note == 6
+            head = QPixmap(':/res/res/note/img_renda_big_head.png')
+            mid = QPixmap(':/res/res/note/img_renda_big_middle.png')
+            tail = QPixmap(':/res/res/note/img_renda_big_tail.png')
+        rendaPainter = QPainter()
+        
     
 class BeatLabel(QLabel):
     def __init__(self, parent):
