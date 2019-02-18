@@ -9,6 +9,8 @@ class NoteLabel(QLabel):
         self.note=Score.Note()
     def setNote(self,Note):
         self.note=Note
+    def setRenda(self,start,end):
+        pass
     
 class BeatLabel(QLabel):
     def __init__(self, parent):
