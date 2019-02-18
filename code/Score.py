@@ -90,6 +90,8 @@ class Note:
         self.GOGOStart=copy.deepcopy(Note.GOGO)
         self.balloon=copy.deepcopy(Note.balloon)
         self.parentBeat=Note.parentBeat
+    def setLabel(self,Label):
+        self.label=Label
     def setZero(self):
         self.noteParam='0'
     def getNote(self):

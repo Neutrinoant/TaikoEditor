@@ -42,7 +42,7 @@ class MainWindow(QMainWindow, form_class):
     #     self.label_don3.raise_()
     #     self.label_don3.stackUnder(self.label_don2)
 
-    def makeLabelNote(self,note):
+    def makeLabelNote(self,note,rendaLen=None):
         # make label_don
         label = NoteLabel(self.scrollAreaWidgetContents)
         noteImage = None
@@ -56,6 +56,8 @@ class MainWindow(QMainWindow, form_class):
             noteImage= QPixmap(':/res/res/note/img_don_big.png')
         elif note==4:
             noteImage= QPixmap(':/res/res/note/img_kat_big.png')
+        elif note==5:
+            noteImage= QPixmap(':/res/res/note/img_renda_head.png')
         elif note==7:
             noteImage = QPixmap(':/res/res/note/img_balloon.png')
         elif note==8:
@@ -73,6 +75,7 @@ class MainWindow(QMainWindow, form_class):
             elif note==7:
                 noteImage = noteImage.scaled(1, beatSize[1]//3, transformMode=Qt.SmoothTransformation,\
                                             aspectRatioMode=Qt.KeepAspectRatioByExpanding)
+
             label.setPixmap(noteImage)
             label.setFixedSize(noteImage.width(), noteImage.height())
 
@@ -84,10 +87,12 @@ class MainWindow(QMainWindow, form_class):
         noteIdx=0
         beatIdx=0
         barIdx=0
+        rendaflag=False
+        rendaNote, rendaStart,rendaEnd=None,None,None
         # fname = QFileDialog.getOpenFileName(self)[0]
         # if fname == '':
         #     return
-        fname = 'test.tja'
+        fname="test.tja"
         self.score.clearLabel()
         score = Score.TJA(fname)
         track = score.track_list[0]
@@ -100,57 +105,26 @@ class MainWindow(QMainWindow, form_class):
                     beat.label=self.makeLabelBeat(end=True)
                 else:
                     beat.label=self.makeLabelBeat()
-                w,h=beat.label.width(),beat.label.height()
+                w=beat.label.width()
                 offset=w//beat.splitParam
                 noteIdx=0
                 for note in beat.note_list:
-                    N=self.makeLabelNote(note.getNote())
+                    if note.getNote() ==5:
+                        rendaStart=[w+(barIdx*m+beatIdx)*w+offset*noteIdx-N.height()/2, self.label_beat.y()+self.label_beat.height()/2-N.height()/2]
+                        rendaNote=self.makeLabelNote(note.getNote())
+                        N=rendaNote
+                    elif note.getNote()==8:
+                        rendaEnd=[w+(barIdx*m+beatIdx)*w+offset*noteIdx-N.height()/2, self.label_beat.y()+self.label_beat.height()/2-N.height()/2]
+                        rendaNote.setRenda(rendaStart,rendaEnd)
+                    else:
+                        N=self.makeLabelNote(note.getNote())
+                    N.setNote(note)
                     N.move(w+(barIdx*m+beatIdx)*w+offset*noteIdx-N.height()/2, self.label_beat.y()+self.label_beat.height()/2-N.height()/2)
                     note.label=N
                     noteIdx+=1
                 beatIdx+=1
             barIdx+=1
         self.score=score
-        # for note in self.noteList:
-        #     note.deleteLater()
-        # for beat in self.beatList:
-        #     beat.deleteLater()
-
-        # self.noteList=list()
-        # self.beatList=list()
-        # self.measureList=list()
-        
-        # rendaInfo = {'flag':False, 'note':0, 'barIdx':0, 'splitIdx':0}
-        # barIdx = 0
-
-        # for bar in track.bar_list:
-        #     m = bar.measure
-        #     tempBeatList = [self.makeLabelBeat() for _ in range(m[0]-1)]
-        #     tempBeatList.append(self.makeLabelBeat(end=True))
-        #     beatIdx = 0
-
-        #     for beat in bar.beat_list:
-        #         w, h = tempBeatList[beatIdx].width(), tempBeatList[beatIdx].height()
-        #         splitNum = beat.splitParam
-        #         offset = tempBeatList[0].width() // splitNum
-        #         tempNoteList=list()
-
-        #         for note in beat.note_list:
-        #             N=self.makeLabelNote(note.getNote())
-        #             N.setNote(note)
-        #             tempNoteList.append(N)
-
-        #         for i in range(len(tempNoteList)):
-        #             tempNoteList[i].move(w+(barIdx*m[0]+beatIdx)*w+offset*i-tempNoteList[i].height()/2, self.label_beat.y()+self.label_beat.height()/2-tempNoteList[i].height()/2)  # need modify
-                
-        #         beatIdx += 1
-        #         self.noteList += tempNoteList
-
-        #     barIdx += 1
-        #     self.beatList.append(tempBeatList)
-        #     self.measureList.append(m)
-
-        # self.score = score
         
 
             

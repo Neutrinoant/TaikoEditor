@@ -8,13 +8,17 @@ class NoteLabel(QLabel):
         super().__init__(parent)
         self.note=Score.Note()
     def setNote(self,Note):
-        self.note.setNote(Note)
+        self.note=Note
     
 class BeatLabel(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
         self.mousePressEvent = self.beatClicked
         self.highlighted = False
+        self.beat=Score.Beat()
+    
+    def setBeat(self,Beat):
+        self.beat=Beat
 
     def beatClicked(self, event):
         global highlightBeatLabel
