@@ -84,9 +84,10 @@ class MainWindow(QMainWindow, form_class):
         noteIdx=0
         beatIdx=0
         barIdx=0
-        fname = QFileDialog.getOpenFileName(self)[0]
-        if fname == '':
-            return
+        # fname = QFileDialog.getOpenFileName(self)[0]
+        # if fname == '':
+        #     return
+        fname = 'test.tja'
         self.score.clearLabel()
         score = Score.TJA(fname)
         track = score.track_list[0]
