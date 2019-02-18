@@ -1,5 +1,7 @@
 from PyQt5.QtWidgets import QLabel 
+from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+from PyQt5 import uic
 import Score
 highlightBeatLabel = None
 
@@ -11,15 +13,33 @@ class NoteLabel(QLabel):
         self.note=Note
     #start: left-top of first note, End: left-top of last note
     def setRenda(self,rendaStart,rendaEnd):
-        if self.note.getNote()==5:
-            head = QPixmap(':/res/res/note/img_renda_head.png')
-            mid = QPixmap(':/res/res/note/img_renda_middle.png')
-            tail = QPixmap(':/res/res/note/img_renda_tail.png')
-        else:  # note == 6
-            head = QPixmap(':/res/res/note/img_renda_big_head.png')
-            mid = QPixmap(':/res/res/note/img_renda_big_middle.png')
-            tail = QPixmap(':/res/res/note/img_renda_big_tail.png')
-        rendaPainter = QPainter()
+        noteWidth = self.width()
+        noteHeight = self.height()
+        midWidth = rendaEnd-rendaStart
+        self.setFixedSize(midWidth+noteWidth, noteWidth)
+        if self.note.getNote() != 7:
+            if self.note.getNote()==5:
+                head = QPixmap(':/res/res/note/img_renda_head.png')
+                mid = QPixmap(':/res/res/note/img_renda_middle.png')
+                tail = QPixmap(':/res/res/note/img_renda_tail.png')
+            elif self.note.getNote()==6:
+                head = QPixmap(':/res/res/note/img_renda_big_head.png')
+                mid = QPixmap(':/res/res/note/img_renda_big_middle.png')
+                tail = QPixmap(':/res/res/note/img_renda_big_tail.png')
+            rendaPixmap = QPixmap(rendaEnd-rendaStart+noteWidth,noteHeight)
+            rendaPixmap.fill(Qt.transparent)
+            rendaPainter = QPainter(rendaPixmap)
+            rendaPainter.setRenderHint(QPainter.SmoothPixmapTransform)
+            rendaPainter.drawPixmap(QRect(midWidth,0,noteWidth,noteHeight),tail)
+            rendaPainter.drawPixmap(QRect(noteWidth//2,0,midWidth,noteHeight),mid)
+            rendaPainter.drawPixmap(QRect(0,0,noteWidth,noteHeight),head)
+            rendaPainter.end()
+            self.setPixmap(rendaPixmap)
+        else: # note = 7
+            head = QPixmap(':/res/res/note/img_balloon_head.png')
+            tail = QPixmap(':/res/res/note/img_balloon_tail.png')
+
+
         
     
 class BeatLabel(QLabel):

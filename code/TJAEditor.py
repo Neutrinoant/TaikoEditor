@@ -89,10 +89,10 @@ class MainWindow(QMainWindow, form_class):
         barIdx=0
         rendaflag=False
         rendaNote, rendaStart,rendaEnd=None,None,None
-        # fname = QFileDialog.getOpenFileName(self)[0]
-        # if fname == '':
-        #     return
-        fname="test.tja"
+        fname = QFileDialog.getOpenFileName(self)[0]
+        if fname == '':
+            return
+        # fname="test.tja"
         self.score.clearLabel()
         score = Score.TJA(fname)
         track = score.track_list[0]
@@ -109,12 +109,12 @@ class MainWindow(QMainWindow, form_class):
                 offset=w//beat.splitParam
                 noteIdx=0
                 for note in beat.note_list:
-                    if note.getNote() ==5:
-                        rendaStart=[w+(barIdx*m+beatIdx)*w+offset*noteIdx-N.height()/2, self.label_beat.y()+self.label_beat.height()/2-N.height()/2]
+                    if note.getNote() in [5,6,7]:
                         rendaNote=self.makeLabelNote(note.getNote())
                         N=rendaNote
+                        rendaStart=w+(barIdx*m+beatIdx)*w+offset*noteIdx-N.height()/2
                     elif note.getNote()==8:
-                        rendaEnd=[w+(barIdx*m+beatIdx)*w+offset*noteIdx-N.height()/2, self.label_beat.y()+self.label_beat.height()/2-N.height()/2]
+                        rendaEnd=w+(barIdx*m+beatIdx)*w+offset*noteIdx-rendaNote.height()/2
                         rendaNote.setRenda(rendaStart,rendaEnd)
                     else:
                         N=self.makeLabelNote(note.getNote())

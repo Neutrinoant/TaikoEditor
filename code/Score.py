@@ -42,6 +42,9 @@ class Bar:
             if cnt>=l:
                 beatListIdx=beatListIdx+idxOffset
                 cnt=0
+    def clearLabel(self):
+        for beat in self.beat_list:
+            beat.clearLabel()
     def __repr__(self):
         s=str()
         for b in self.beat_list:
@@ -55,6 +58,15 @@ class Beat:
         self.note_list=list()
         self.splitParam=int(split) # 한 박자를 몇개로 쪼갤것인가
         self.parentBar=parent
+        self.label=None
+    def clearLabel(self):
+        for note in self.note_list:
+            note.deleteLabel()
+        self.deleteLabel()
+    def deleteLabel(self):
+        if self.label==None:
+            return
+        self.label.deleteLater()
         self.label=None
     def setSplit(self,split):
         self.splitParam=split
@@ -92,6 +104,11 @@ class Note:
         self.parentBeat=Note.parentBeat
     def setLabel(self,Label):
         self.label=Label
+    def deleteLabel(self):
+        if self.label==None:
+            return
+        self.label.deleteLater()
+        self.label=None
     def setZero(self):
         self.noteParam='0'
     def getNote(self):
@@ -117,6 +134,9 @@ class Track:
         print(self)
         for bar in self.bar_list:
             print(bar)
+    def clearLabel(self):
+        for bar in self.bar_list:
+            bar.clearLabel()
     # def toTJAForm(self):
     #     s=str()
     def __repr__(self):
@@ -307,7 +327,8 @@ class TJA:
         for Tr in self.track_list:
             Tr.print()
     def clearLabel(self):
-        pass
+        for tr in self.track_list:
+            tr.clearLabel()
 
     
     # def toTJAForm(self):
