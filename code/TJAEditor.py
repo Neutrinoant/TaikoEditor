@@ -58,23 +58,25 @@ class MainWindow(QMainWindow, form_class):
             noteImage= QPixmap(':/res/res/note/img_kat_big.png')
         elif note==5:
             noteImage= QPixmap(':/res/res/note/img_renda_head.png')
+        elif note==6:
+            noteImage= QPixmap(':/res/res/note/img_renda_big_head.png')
         elif note==7:
-            noteImage = QPixmap(':/res/res/note/img_balloon.png')
+            noteImage= QPixmap(':/res/res/note/img_balloon_head.png')
         elif note==8:
             pass
         else:
             noteImage= QPixmap(':/res/res/note/img_don.png') # will be implemented
-            pass  # need other notes (number 5,6,7,8,9)
+            pass  # need other notes (number 9)
 
         beatSize=[self.label_beat.height(),self.label_beat.height()]
         if note>0 and note!=8:
-            if note in [1,2,5]:
+            if note in [1,2,5,7]:
                 noteImage = noteImage.scaled(beatSize[0]//3, beatSize[1]//3, transformMode=Qt.SmoothTransformation)
             elif note in [3,4,6]:
                 noteImage = noteImage.scaled(beatSize[0]//2, beatSize[1]//2, transformMode=Qt.SmoothTransformation)
-            elif note==7:
-                noteImage = noteImage.scaled(1, beatSize[1]//3, transformMode=Qt.SmoothTransformation,\
-                                            aspectRatioMode=Qt.KeepAspectRatioByExpanding)
+            # elif note==7:
+            #     noteImage = noteImage.scaled(1, beatSize[1]//3, transformMode=Qt.SmoothTransformation,\
+            #                                 aspectRatioMode=Qt.KeepAspectRatioByExpanding)
 
             label.setPixmap(noteImage)
             label.setFixedSize(noteImage.width(), noteImage.height())

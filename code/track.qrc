@@ -1,11 +1,8 @@
 <RCC>
   <qresource prefix="res">
-    <file>res/note/img_renda_big_middle.png</file>
-    <file>res/note/img_balloon.png</file>
     <file>res/note/img_balloon_head.png</file>
-    <file>res/note/img_balloon_head2.png</file>
+    <file>res/note/img_balloon_middle.png</file>
     <file>res/note/img_balloon_tail.png</file>
-    <file>res/note/img_balloon2.png</file>
     <file>res/note/img_don.png</file>
     <file>res/note/img_don_big.png</file>
     <file>res/note/img_don_big2.png</file>
@@ -16,6 +13,7 @@
     <file>res/note/img_kat2.png</file>
     <file>res/note/img_renda_big_head.png</file>
     <file>res/note/img_renda_big_head2.png</file>
+    <file>res/note/img_renda_big_middle.png</file>
     <file>res/note/img_renda_big_tail.png</file>
     <file>res/note/img_renda_head.png</file>
     <file>res/note/img_renda_head2.png</file>
