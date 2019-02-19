@@ -7,6 +7,7 @@ import bisect
 import random
 import copy
 import Score
+import math
 from CustomLabel import NoteLabel,BeatLabel
 
 form_class = uic.loadUiType("mainWindow.ui")[0]
@@ -108,7 +109,7 @@ class MainWindow(QMainWindow, form_class):
                 else:
                     beat.label=self.makeLabelBeat()
                 w=beat.label.width()
-                offset=w//beat.splitParam
+                offset=w/beat.splitParam
                 noteIdx=0
                 for note in beat.note_list:
                     if note.getNote() in [5,6,7]:
