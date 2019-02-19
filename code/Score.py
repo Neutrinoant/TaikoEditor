@@ -2,7 +2,12 @@ import copy
 import re
 import codecs
 import sys
+import math
 from CustomLabel import NoteLabel,BeatLabel
+
+
+def LCM(a,b):
+    return a*b//math.gcd(a,b)
 
 class Bar:
     def __init__(self,measure):
@@ -14,22 +19,24 @@ class Bar:
         self.beat_list=self.beat_list[0:measure[0]]
     def setNoteList(self,rawNoteList):
         #10110101 같은게 들어온다. 8칸이고 메져가 4/4 면 2칸씩 나눈다.
-        # print(rawNoteList) 
-        l=len(rawNoteList)/self.measure[0]
-        # print(l)
-        if l<1:
-            #1->1000으로 바꿔주는 과정이 필요. 우선 전체 길이를 1/l 배 만큼 늘려야한다.
-            #기본적으로 한개 들어간다고 생각하고, 0인 노트를 1/l-1 개 만큼 복사해서 넣어준다고 생각하자. 
+        if len(rawNoteList)%self.measure[0]!=0:
+            #case 1 : 작을때, case 2: 클 때 
+            # 메져가 4고 길이가 6개. 전체길이는 12개가 되어야한다.
+            # 메져가 4고 길이가 2개, 전체길이는 4개가 되어야한다. 
+            # 새 길이는 둘의 최소공배수가 되어야한다.
+            newLen=LCM(len(rawNoteList),self.measure[0])
+            exParam=int(newLen/len(rawNoteList)) # 여기서 만들어진 exParam이 노트 1개를 몇배로 늘릴것인지의 척도가 된다. 
+            # print(exParam)
             newRawNoteList=list()
             for n in rawNoteList:
                 newRawNoteList.append(n)
-                for _ in range(int(1/l)-1):
+                for _ in range(exParam-1):
                     N=Note()
                     N.setNote(n)
                     N.setZero()
                     newRawNoteList.append(N)
             rawNoteList=newRawNoteList
-            l=1
+        l=len(rawNoteList)/self.measure[0]
         idxOffset=1
         cnt=0
         beatListIdx=0

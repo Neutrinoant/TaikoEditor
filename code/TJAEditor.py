@@ -7,6 +7,7 @@ import bisect
 import random
 import copy
 import Score
+import math
 from CustomLabel import NoteLabel,BeatLabel
 import math
 
