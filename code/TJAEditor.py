@@ -9,6 +9,7 @@ import copy
 import Score
 import math
 from CustomLabel import NoteLabel,BeatLabel
+import math
 
 form_class = uic.loadUiType("mainWindow.ui")[0]
 highlightBeatLabel = None
@@ -122,9 +123,10 @@ class MainWindow(QMainWindow, form_class):
                     else:
                         N=self.makeLabelNote(note.getNote())
                     N.setNote(note)
-                    N.move(w+(barIdx*m+beatIdx)*w+offset*noteIdx-N.height()/2, self.label_beat.y()+self.label_beat.height()/2-N.height()/2)
+                    N.move(round(w+(barIdx*m+beatIdx)*w+offset*noteIdx-N.height()/2), self.label_beat.y()+self.label_beat.height()/2-N.height()/2)
                     note.label=N
                     noteIdx+=1
+                    print(N.x())
                 beatIdx+=1
             barIdx+=1
         self.score=score
