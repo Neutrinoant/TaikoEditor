@@ -8,6 +8,7 @@ import random
 import copy
 import Score
 from CustomLabel import NoteLabel,BeatLabel
+import math
 
 form_class = uic.loadUiType("mainWindow.ui")[0]
 highlightBeatLabel = None
@@ -108,7 +109,7 @@ class MainWindow(QMainWindow, form_class):
                 else:
                     beat.label=self.makeLabelBeat()
                 w=beat.label.width()
-                offset=w//beat.splitParam
+                offset=w/beat.splitParam
                 noteIdx=0
                 for note in beat.note_list:
                     if note.getNote() in [5,6,7]:
@@ -121,9 +122,10 @@ class MainWindow(QMainWindow, form_class):
                     else:
                         N=self.makeLabelNote(note.getNote())
                     N.setNote(note)
-                    N.move(w+(barIdx*m+beatIdx)*w+offset*noteIdx-N.height()/2, self.label_beat.y()+self.label_beat.height()/2-N.height()/2)
+                    N.move(round(w+(barIdx*m+beatIdx)*w+offset*noteIdx-N.height()/2), self.label_beat.y()+self.label_beat.height()/2-N.height()/2)
                     note.label=N
                     noteIdx+=1
+                    print(N.x())
                 beatIdx+=1
             barIdx+=1
         self.score=score
