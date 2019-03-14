@@ -34,6 +34,7 @@ class MainWindow(QMainWindow, form_class):
         self.horizontalLayout.addStretch(1)
 
         self.push_load.clicked.connect(self.push_load_clicked)
+        self.push_save.clicked.connect(self.push_save_clicked)
         self.noteList=list()
         self.beatList=list()
         self.score=Score.TJA()
@@ -86,6 +87,13 @@ class MainWindow(QMainWindow, form_class):
         label.setScaledContents(True)
         label.show()
         return label
+    
+    def push_save_clicked(self):
+        fname=QFileDialog.getSaveFileName(self)[0]
+        print(fname)
+        file=open(fname,'w')
+        file.write(self.score.toTJAForm())
+        file.close()
 
     def push_load_clicked(self):
         noteIdx=0
@@ -126,11 +134,12 @@ class MainWindow(QMainWindow, form_class):
                     N.move(round(w+(barIdx*m+beatIdx)*w+offset*noteIdx-N.height()/2), self.label_beat.y()+self.label_beat.height()/2-N.height()/2)
                     note.label=N
                     noteIdx+=1
-                    print(N.x())
+                    # print(N.x())
                 beatIdx+=1
             barIdx+=1
         self.score=score
-        
+        # self.score.print()
+        print(self.score.toTJAForm())
 
             
 

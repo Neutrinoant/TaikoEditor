@@ -54,6 +54,7 @@ class Bar:
             beat.clearLabel()
     def __repr__(self):
         s=str()
+        s+=str(self.measure[0])+" "+str(self.measure[1])+"\n"
         for b in self.beat_list:
             s=s+str(b)+" "
         return s
@@ -280,14 +281,14 @@ class TJA:
                     continue
                 if line=='#START':
                     flag=True
+                    curGOGO=False
+                    curSCROLL=1.0
+                    curBPM=self.BPM
+                    curMEASURE=[4,4]
+                    tempList=list()
+                    balloonIdx=0
             #보면 파싱하기
             else:
-                curGOGO=False
-                curSCROLL=1.0
-                curBPM=self.BPM
-                curMEASURE=[4,4]
-                tempList=list()
-                balloonIdx=0
                 if line=='#END':
                     flag=False
                     # self.track_list[curTrIdx].bar_list=makeBarList(bar,self.BPM,curBalloonList)
@@ -310,6 +311,7 @@ class TJA:
                         if s!=None:
                             curMEASURE[0]=int(s.group(1))
                             curMEASURE[1]=int(s.group(2))
+                            
                             continue
                     else:
                         for note in line:
@@ -317,6 +319,7 @@ class TJA:
                                 if len(tempList)==0:
                                     tempList.append(Note(None,curBPM,'0',curSCROLL,None,curGOGO))
                                 B=Bar(curMEASURE)
+                                print(curMEASURE)
                                 B.setNoteList(tempList)
                                 self.track_list[curTrIdx].pushBar(B)
                                 tempList=list()
@@ -338,51 +341,81 @@ class TJA:
             tr.clearLabel()
 
     
-    # def toTJAForm(self):
-    #     s=str()
-    #     s=s+"TITLE:"+str(self.TITLE)+"\n"
-    #     s=s+"SUBTITLE:"+str(self.SUBTITLE)+"\n"
-    #     s=s+"BPM:"+str(self.BPM)+"\n"
-    #     s=s+"WAVE:"+str(self.WAVE)+"\n"
-    #     s=s+"SONGVOL:"+str(self.SONGVOL)+"\n"
-    #     s=s+"SEVOL:"+str(self.SEVOL)+"\n"
-    #     s=s+"OFFSET:"+str(self.OFFSET)+"\n"
-    #     s=s+"DEMOSTART:"+str(self.DEMOSTART)+"\n"
-    #     s=s+"SIDE:"+str(self.SIDE)+"\n"
-    #     s=s+"SCOREMODE:"+str(self.SCOREMODE)+"\n"
-    #     s=s+"GENRE:"+str(self.GENRE)+"\n"
-    #     s=s+"\n"
-    #     for track in self.track_list:
-    #         s=s+"COURSE:"+str(track.COURSE)+"\n"
-    #         s=s+"LEVEL:"+str(track.LEVEL)+"\n"
-
-    #         if track.SCOREINIT==0:
-    #             s=s+"SCOREINIT:"+"\n"
-    #         else:
-    #             s=s+"SCOREINIT:"+str(track.SCOREINIT)+"\n"
-    #         if track.SCOREDIFF==0:
-    #             s=s+"SCOREDIFF:"+"\n"
-    #         else:
-    #             s=s+"SCOREDIFF:"+str(track.SCOREDIFF)+"\n"
-
-    #         s=s+"STYLE:"+str(track.STYLE)+"\n"
-
-    #         curMeasure=[4,4]
-    #         curBPM=self.BPM
-    #         ballonList=list()
-    #         for bar in track.bar_list:
-    #             for beat in bar.beat_list:
-    #                 for note in beaself.note_list:
-    #                     if note.noteParam=='7':
-    #                         ballonLisself.append(note.balloon)
-    #         s=s+"BALLOON:"
-    #         for i in ballonList:
-    #             s=s+i+","
+    def toTJAForm(self):
+        s=str()
+        curline=""
+        s=s+"TITLE:"+str(self.TITLE)+"\n"
+        s=s+"SUBTITLE:"+str(self.SUBTITLE)+"\n"
+        s=s+"BPM:"+str(self.BPM)+"\n"
+        s=s+"WAVE:"+str(self.WAVE)+"\n"
+        s=s+"SONGVOL:"+str(self.SONGVOL)+"\n"
+        s=s+"SEVOL:"+str(self.SEVOL)+"\n"
+        s=s+"OFFSET:"+str(self.OFFSET)+"\n"
+        s=s+"DEMOSTART:"+str(self.DEMOSTART)+"\n"
+        s=s+"SIDE:"+str(self.SIDE)+"\n"
+        s=s+"SCOREMODE:"+str(self.SCOREMODE)+"\n"
+        s=s+"GENRE:"+str(self.GENRE)+"\n"
+        s=s+"\n"
+        for track in self.track_list:
+            s=s+"\n"
+            s=s+"COURSE:"+str(track.COURSE)+"\n"
+            s=s+"LEVEL:"+str(track.LEVEL)+"\n"
+            s=s+"SCOREINIT:"+str(track.SCOREINIT)+"\n"
+            s=s+"SCOREDIFF:"+str(track.SCOREDIFF)+"\n"
+            s=s+"STYLE:"+str(track.STYLE)+"\n"
+            curMeasure=[4,4]
+            curBPM=self.BPM
+            curGOGO=False
+            curSCROLL=1.0
+            ballonList=list()
+            for bar in track.bar_list:
+                for beat in bar.beat_list:
+                    for note in beat.note_list:
+                        if note.noteParam=='7':
+                            ballonList.append(note.balloon)
+            s=s+"BALLOON:"
+            for i in ballonList:
+                s=s+i+","
                 
-    #         s=s+"\n"+"#START"+"\n"
-    #         s=s+"#END"+"\n"
+            s=s+"\n"+"#START"
+            for bar in track.bar_list:
+                if curMeasure[0] != bar.measure[0] or curMeasure[1] != bar.measure[1]:
+                    curMeasure=copy.deepcopy(bar.measure)
+                    s+="#MEASURE "+ str(bar.measure[0])+"/"+str(bar.measure[1])+"\n"
+                for beat in bar.beat_list:
+                    for note in beat.note_list:
+                        if curBPM != note.BPM:
+                            curBPM=note.BPM
+                            if curline!="":
+                                s+=curline+"\n"
+                                curline=""
+                            s+="#BPMCHANGE "+str(curBPM)+"\n"
+                        if not curGOGO and note.GOGO:
+                            if curline!="":
+                                s+=curline+"\n"
+                                curline=""
+                            s+="#GOGOSTART\n"
+                            curGOGO=True
+                        elif curGOGO and not note.GOGO:
+                            if curline!="":
+                                s+=curline+"\n"
+                                curline=""
+                            s+="#GOGOEND\n"
+                            curGOGO=False
+                        if curSCROLL!=note.scroll:
+                            if curline!="":
+                                s+=curline+"\n"
+                                curline=""
+                            curSCROLL=note.scroll
+                            s+="#SCROLL "+str(curSCROLL)+"\n"
+                        curline+=str(note.noteParam)
+                if curline!="":
+                    s+=curline
+                s+=",\n"
+                curline=""
+            s=s+"#END"+"\n"
         
-    #     return s
+        return s
 
     def __repr__(self):
         return str([self.TITLE,self.SUBTITLE,self.BPM,self.WAVE,self.SONGVOL,self.SEVOL,self.OFFSET,self.DEMOSTART,self.SIDE,self.SCOREMODE,self.GENRE,self.GAME,self.LIFE])
