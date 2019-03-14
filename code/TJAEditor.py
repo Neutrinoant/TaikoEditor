@@ -96,11 +96,8 @@ class MainWindow(QMainWindow, form_class):
         file.close()
 
     def push_load_clicked(self):
-        noteIdx=0
-        beatIdx=0
-        barIdx=0
         rendaflag=False
-        rendaNote, rendaStart,rendaEnd=None,None,None
+        rendaNote,rendaStart,rendaEnd = None,None,None
         fname = QFileDialog.getOpenFileName(self)[0]
         if fname == '':
             return
@@ -108,34 +105,36 @@ class MainWindow(QMainWindow, form_class):
         self.score.clearLabel()
         score = Score.TJA(fname)
         track = score.track_list[0]
+        curBarPos = self.label_beat.width() # left-most absolute position x of current bar
+        barIdx = 0
         for bar in track.bar_list:
-            m=bar.measure[0]
-            beatIdx=0
-            for i in range(len(bar.beat_list)):
-                beat=bar.beat_list[i]
-                if i==len(bar.beat_list)-1:
-                    beat.label=self.makeLabelBeat(end=True)
+            m = bar.measure[0]
+            beatIdx = 0
+            for beat in bar.beat_list:
+                if beatIdx == len(bar.beat_list)-1:
+                    beat.label = self.makeLabelBeat(end=True)
                 else:
-                    beat.label=self.makeLabelBeat()
-                w=beat.label.width()
-                offset=w/beat.splitParam
-                noteIdx=0
+                    beat.label = self.makeLabelBeat()
+                w = beat.label.width()
+                offset = w/beat.splitParam # distance between notes
+                noteIdx = 0
                 for note in beat.note_list:
                     if note.getNote() in [5,6,7]:
-                        rendaNote=self.makeLabelNote(note.getNote())
-                        N=rendaNote
-                        rendaStart=w+(barIdx*m+beatIdx)*w+offset*noteIdx-N.height()/2
+                        rendaNote = self.makeLabelNote(note.getNote())
+                        N = rendaNote
+                        rendaStart = curBarPos+beatIdx*w+noteIdx*offset-N.height()/2
                     elif note.getNote()==8:
-                        rendaEnd=w+(barIdx*m+beatIdx)*w+offset*noteIdx-rendaNote.height()/2
+                        rendaEnd=curBarPos+beatIdx*w+noteIdx*offset-rendaNote.height()/2
                         rendaNote.setRenda(rendaStart,rendaEnd)
                     else:
-                        N=self.makeLabelNote(note.getNote())
+                        N = self.makeLabelNote(note.getNote())
                     N.setNote(note)
-                    N.move(round(w+(barIdx*m+beatIdx)*w+offset*noteIdx-N.height()/2), self.label_beat.y()+self.label_beat.height()/2-N.height()/2)
-                    note.label=N
+                    N.move(round(curBarPos+beatIdx*w+noteIdx*offset-N.height()/2), round(self.label_beat.y()+self.label_beat.height()/2-N.height()/2))
+                    note.label = N
                     noteIdx+=1
                     # print(N.x())
                 beatIdx+=1
+            curBarPos += m*w
             barIdx+=1
         self.score=score
         # self.score.print()
