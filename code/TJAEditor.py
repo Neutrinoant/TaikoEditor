@@ -13,6 +13,8 @@ import math
 
 form_class = uic.loadUiType("mainWindow.ui")[0]
 highlightBeatLabel = None
+donList = []
+donNum = 0
 
 class MainWindow(QMainWindow, form_class):
     def __init__(self):
@@ -39,6 +41,13 @@ class MainWindow(QMainWindow, form_class):
         self.beatList=list()
         self.score=Score.TJA()
         # print(self.label_beat.width())
+
+# sample code
+        self.undoStack = QUndoStack(self)
+        self.push_create.clicked.connect(self.push_create_clicked)
+        self.push_redo.clicked.connect(self.undoStack.redo)
+        self.push_undo.clicked.connect(self.undoStack.undo)
+#############
 
 
     # def push_changeOrder_clicked(self):
@@ -163,6 +172,49 @@ class MainWindow(QMainWindow, form_class):
         return label
 
 
+
+# sample code
+    def makeLabelDon(self):
+        # make label_don
+        label = NoteLabel(self.scrollAreaWidgetContents_2)
+        noteImage= QPixmap(':/res/res/note/img_don.png')
+        beatSize=[self.label_beat.height(),self.label_beat.height()]
+        noteImage = noteImage.scaled(50, 50, transformMode=Qt.SmoothTransformation)
+        label.setPixmap(noteImage)
+        label.setFixedSize(noteImage.width(), noteImage.height())
+        label.setScaledContents(True)
+        label.show()
+        return label
+    def push_create_clicked(self):
+        global donNum
+        description = 'create don%d' % donNum
+        command = CommandCreate(self.makeLabelDon, description)
+        self.undoStack.push(command)
+#############
+
+# sample code
+class CommandCreate(QUndoCommand):
+
+    def __init__(self, makeDon, description):
+        super(CommandCreate, self).__init__(description)
+        self.makeDon = makeDon  # function
+
+    def redo(self):
+        don = self.makeDon()
+        global donNum
+        global donList
+        don.setObjectName('don%d' % donNum)
+        don.move(donNum*don.width()//10, 0)
+        donList.append(don)
+        donNum += 1
+
+    def undo(self):
+        global donNum
+        global donList
+        don = donList.pop()
+        don.deleteLater()
+        donNum -= 1
+#############
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
