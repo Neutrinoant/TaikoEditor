@@ -286,7 +286,7 @@ class TJA:
                 curSCROLL=1.0
                 curBPM=self.BPM
                 curMEASURE=[4,4]
-                tempList=list()
+                # tempList=list()
                 balloonIdx=0
                 if line=='#END':
                     flag=False
