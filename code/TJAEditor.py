@@ -15,7 +15,9 @@ form_class = uic.loadUiType("mainWindow.ui")[0]
 highlightBeatLabel = None
 donList = []
 donNum = 0
-
+noteImageList=["",':/res/res/note/img_don.png',':/res/res/note/img_kat.png',':/res/res/note/img_don_big.png',
+':/res/res/note/img_kat_big.png',':/res/res/note/img_renda_head.png',':/res/res/note/img_renda_big_head.png', ':/res/res/note/img_balloon_head.png'
+]
 class MainWindow(QMainWindow, form_class):
     def __init__(self):
         super().__init__()
@@ -60,25 +62,27 @@ class MainWindow(QMainWindow, form_class):
         noteImage = None
         if note == 0:
             pass
-        elif note==1:
-            noteImage= QPixmap(':/res/res/note/img_don.png')
-        elif note==2:
-            noteImage = QPixmap(':/res/res/note/img_kat.png')
-        elif note==3:
-            noteImage= QPixmap(':/res/res/note/img_don_big.png')
-        elif note==4:
-            noteImage= QPixmap(':/res/res/note/img_kat_big.png')
-        elif note==5:
-            noteImage= QPixmap(':/res/res/note/img_renda_head.png')
-        elif note==6:
-            noteImage= QPixmap(':/res/res/note/img_renda_big_head.png')
-        elif note==7:
-            noteImage= QPixmap(':/res/res/note/img_balloon_head.png')
+        # elif note==1:
+        #     noteImage= QPixmap(':/res/res/note/img_don.png')
+        # elif note==2:
+        #     noteImage = QPixmap(':/res/res/note/img_kat.png')
+        # elif note==3:
+        #     noteImage= QPixmap(':/res/res/note/img_don_big.png')
+        # elif note==4:
+        #     noteImage= QPixmap(':/res/res/note/img_kat_big.png')
+        # elif note==5:
+        #     noteImage= QPixmap(':/res/res/note/img_renda_head.png')
+        # elif note==6:
+        #     noteImage= QPixmap(':/res/res/note/img_renda_big_head.png')
+        # elif note==7:
+        #     noteImage= QPixmap(':/res/res/note/img_balloon_head.png')
         elif note==8:
             pass
+        # else:
+        #     noteImage= QPixmap(':/res/res/note/img_don.png') # will be implemented
+        #     pass  # need other notes (number 9)
         else:
-            noteImage= QPixmap(':/res/res/note/img_don.png') # will be implemented
-            pass  # need other notes (number 9)
+            noteImage= QPixmap(noteImageList[note])
 
         beatSize=[self.label_beat.height(),self.label_beat.height()]
         if note>0 and note!=8:
