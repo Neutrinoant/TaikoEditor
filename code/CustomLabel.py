@@ -9,8 +9,15 @@ class NoteLabel(QLabel):
     def __init__(self,parent):
         super().__init__(parent)
         self.note=Score.Note()
+        self.mousePressEvent = self.NoteClicked
     def setNote(self,Note):
         self.note=Note
+
+    def NoteClicked(self,event):
+        self.note.label.hide()
+        self.note.noteParam=0
+
+
 
     #start: left-top of first note, End: left-top of last note
     def setRenda(self,rendaStart,rendaEnd):

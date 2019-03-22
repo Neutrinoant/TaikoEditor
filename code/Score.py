@@ -377,7 +377,7 @@ class TJA:
             for i in ballonList:
                 s=s+i+","
                 
-            s=s+"\n"+"#START"
+            s=s+"\n"+"#START"+"\n"
             for bar in track.bar_list:
                 if curMeasure[0] != bar.measure[0] or curMeasure[1] != bar.measure[1]:
                     curMeasure=copy.deepcopy(bar.measure)
