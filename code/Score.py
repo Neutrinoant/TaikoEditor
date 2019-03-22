@@ -3,8 +3,8 @@ import re
 import codecs
 import sys
 import math
-from CustomLabel import NoteLabel,BeatLabel
-
+# from CustomLabel import NoteLabel,BeatLabel
+import CustomLabel
 
 def LCM(a,b):
     return a*b//math.gcd(a,b)
@@ -96,7 +96,7 @@ class Beat:
 
 class Note:
     def __init__(self,parent=None,BPM=0,noteParam='0',scroll=1.0,balloon=None,GOGO=False):
-        self.noteParam=noteParam #0=쉼표 1=동 2=캇 3:큰동 4:큰캇 5:단무지
+        self.noteParam=int(noteParam) #0=쉼표 1=동 2=캇 3:큰동 4:큰캇 5:단무지
         self.BPM=BPM
         self.scroll=scroll
         self.GOGO=GOGO #True는 고고중 False는 아님
@@ -118,7 +118,7 @@ class Note:
         self.label.deleteLater()
         self.label=None
     def setZero(self):
-        self.noteParam='0'
+        self.noteParam=0
     def getNote(self):
         return int(self.noteParam)
     def getParent(self):

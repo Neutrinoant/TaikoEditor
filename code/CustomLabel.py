@@ -3,6 +3,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5 import uic
 import Score
+
 highlightBeatLabel = None
 
 class NoteLabel(QLabel):
@@ -14,8 +15,13 @@ class NoteLabel(QLabel):
         self.note=Note
 
     def NoteClicked(self,event):
-        self.note.label.hide()
-        self.note.noteParam=0
+        from TJAEditor import noteImageList
+        newImageIdx=(self.note.noteParam)%4+1 
+        print(newImageIdx)
+        newImage=QPixmap(noteImageList[ newImageIdx ]) #1-2-3-4 가 돌아간다
+        self.note.label.setPixmap(newImage)
+        self.note.label.show()
+        self.note.noteParam=newImageIdx
 
 
 
