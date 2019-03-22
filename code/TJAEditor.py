@@ -13,6 +13,8 @@ import math
 
 form_class = uic.loadUiType("mainWindow.ui")[0]
 highlightBeatLabel = None
+donList = []
+donNum = 0
 
 class MainWindow(QMainWindow, form_class):
     def __init__(self):
@@ -34,10 +36,18 @@ class MainWindow(QMainWindow, form_class):
         self.horizontalLayout.addStretch(1)
 
         self.push_load.clicked.connect(self.push_load_clicked)
+        self.push_save.clicked.connect(self.push_save_clicked)
         self.noteList=list()
         self.beatList=list()
         self.score=Score.TJA()
         # print(self.label_beat.width())
+
+# sample code
+        self.undoStack = QUndoStack(self)
+        self.push_create.clicked.connect(self.push_create_clicked)
+        self.push_redo.clicked.connect(self.undoStack.redo)
+        self.push_undo.clicked.connect(self.undoStack.undo)
+#############
 
 
     # def push_changeOrder_clicked(self):
@@ -86,13 +96,17 @@ class MainWindow(QMainWindow, form_class):
         label.setScaledContents(True)
         label.show()
         return label
+    
+    def push_save_clicked(self):
+        fname=QFileDialog.getSaveFileName(self)[0]
+        print(fname)
+        file=open(fname,'w')
+        file.write(self.score.toTJAForm())
+        file.close()
 
     def push_load_clicked(self):
-        noteIdx=0
-        beatIdx=0
-        barIdx=0
         rendaflag=False
-        rendaNote, rendaStart,rendaEnd=None,None,None
+        rendaNote,rendaStart,rendaEnd = None,None,None
         fname = QFileDialog.getOpenFileName(self)[0]
         if fname == '':
             return
@@ -100,37 +114,40 @@ class MainWindow(QMainWindow, form_class):
         self.score.clearLabel()
         score = Score.TJA(fname)
         track = score.track_list[0]
+        curBarPos = self.label_beat.width() # left-most absolute position x of current bar
+        barIdx = 0
         for bar in track.bar_list:
-            m=bar.measure[0]
-            beatIdx=0
-            for i in range(len(bar.beat_list)):
-                beat=bar.beat_list[i]
-                if i==len(bar.beat_list)-1:
-                    beat.label=self.makeLabelBeat(end=True)
+            m = bar.measure[0]
+            beatIdx = 0
+            for beat in bar.beat_list:
+                if beatIdx == len(bar.beat_list)-1:
+                    beat.label = self.makeLabelBeat(end=True)
                 else:
-                    beat.label=self.makeLabelBeat()
-                w=beat.label.width()
-                offset=w/beat.splitParam
-                noteIdx=0
+                    beat.label = self.makeLabelBeat()
+                w = beat.label.width()
+                offset = w/beat.splitParam # distance between notes
+                noteIdx = 0
                 for note in beat.note_list:
                     if note.getNote() in [5,6,7]:
-                        rendaNote=self.makeLabelNote(note.getNote())
-                        N=rendaNote
-                        rendaStart=w+(barIdx*m+beatIdx)*w+offset*noteIdx-N.height()/2
+                        rendaNote = self.makeLabelNote(note.getNote())
+                        N = rendaNote
+                        rendaStart = curBarPos+beatIdx*w+noteIdx*offset-N.height()/2
                     elif note.getNote()==8:
-                        rendaEnd=w+(barIdx*m+beatIdx)*w+offset*noteIdx-rendaNote.height()/2
+                        rendaEnd=curBarPos+beatIdx*w+noteIdx*offset-rendaNote.height()/2
                         rendaNote.setRenda(rendaStart,rendaEnd)
                     else:
-                        N=self.makeLabelNote(note.getNote())
+                        N = self.makeLabelNote(note.getNote())
                     N.setNote(note)
-                    N.move(round(w+(barIdx*m+beatIdx)*w+offset*noteIdx-N.height()/2), self.label_beat.y()+self.label_beat.height()/2-N.height()/2)
-                    note.label=N
+                    N.move(round(curBarPos+beatIdx*w+noteIdx*offset-N.height()/2), round(self.label_beat.y()+self.label_beat.height()/2-N.height()/2))
+                    note.label = N
                     noteIdx+=1
-                    print(N.x())
+                    # print(N.x())
                 beatIdx+=1
+            curBarPos += m*w
             barIdx+=1
         self.score=score
-        
+        # self.score.print()
+        print(self.score.toTJAForm())
 
             
 
@@ -155,6 +172,49 @@ class MainWindow(QMainWindow, form_class):
         return label
 
 
+
+# sample code
+    def makeLabelDon(self):
+        # make label_don
+        label = NoteLabel(self.scrollAreaWidgetContents_2)
+        noteImage= QPixmap(':/res/res/note/img_don.png')
+        beatSize=[self.label_beat.height(),self.label_beat.height()]
+        noteImage = noteImage.scaled(50, 50, transformMode=Qt.SmoothTransformation)
+        label.setPixmap(noteImage)
+        label.setFixedSize(noteImage.width(), noteImage.height())
+        label.setScaledContents(True)
+        label.show()
+        return label
+    def push_create_clicked(self):
+        global donNum
+        description = 'create don%d' % donNum
+        command = CommandCreate(self.makeLabelDon, description)
+        self.undoStack.push(command)
+#############
+
+# sample code
+class CommandCreate(QUndoCommand):
+
+    def __init__(self, makeDon, description):
+        super(CommandCreate, self).__init__(description)
+        self.makeDon = makeDon  # function
+
+    def redo(self):
+        don = self.makeDon()
+        global donNum
+        global donList
+        don.setObjectName('don%d' % donNum)
+        don.move(donNum*don.width()//10, 0)
+        donList.append(don)
+        donNum += 1
+
+    def undo(self):
+        global donNum
+        global donList
+        don = donList.pop()
+        don.deleteLater()
+        donNum -= 1
+#############
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
