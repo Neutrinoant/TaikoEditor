@@ -3,8 +3,6 @@ import re
 import codecs
 import sys
 import math
-# from CustomLabel import NoteLabel,BeatLabel
-import CustomLabel
 
 def LCM(a,b):
     return a*b//math.gcd(a,b)

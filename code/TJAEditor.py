@@ -3,21 +3,13 @@ from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-import bisect
-import random
-import copy
 import Score
-import math
-from CustomLabel import NoteLabel,BeatLabel
-import math
+from CustomLabel import NoteLabel, BeatLabel
+from Command import CommandCreate
+from Resource import noteImageList
 
 form_class = uic.loadUiType("mainWindow.ui")[0]
-highlightBeatLabel = None
-donList = []
-donNum = 0
-noteImageList=["",':/res/res/note/img_don.png',':/res/res/note/img_kat.png',':/res/res/note/img_don_big.png',
-':/res/res/note/img_kat_big.png',':/res/res/note/img_renda_head.png',':/res/res/note/img_renda_big_head.png', ':/res/res/note/img_balloon_head.png'
-]
+
 class MainWindow(QMainWindow, form_class):
     def __init__(self):
         super().__init__()
@@ -41,16 +33,25 @@ class MainWindow(QMainWindow, form_class):
         self.push_save.clicked.connect(self.push_save_clicked)
         self.noteList=list()
         self.beatList=list()
+        self.highlightBeatLabel=None
         self.score=Score.TJA()
         # print(self.label_beat.width())
 
 # sample code
-        self.undoStack = QUndoStack(self)
         self.push_create.clicked.connect(self.push_create_clicked)
+        self.undoStack = QUndoStack(self)
         self.push_redo.clicked.connect(self.undoStack.redo)
         self.push_undo.clicked.connect(self.undoStack.undo)
+        self.donList = []
+        self.donNum = 0
 #############
 
+    def keyPressEvent(self, e):
+        if e.modifiers() & Qt.ControlModifier:
+            if e.key() == Qt.Key_Z:
+                self.undoStack.undo()
+            elif e.key() == Qt.Key_Y:
+                self.undoStack.redo()
 
     # def push_changeOrder_clicked(self):
     #     self.label_don3.raise_()
@@ -91,6 +92,7 @@ class MainWindow(QMainWindow, form_class):
         if fname == '':
             return
         # fname="test.tja"
+        self.highlightBeatLabel = None
         self.score.clearLabel()
         score = Score.TJA(fname)
         track = score.track_list[0]
@@ -165,34 +167,9 @@ class MainWindow(QMainWindow, form_class):
         label.show()
         return label
     def push_create_clicked(self):
-        global donNum
-        description = 'create don%d' % donNum
-        command = CommandCreate(self.makeLabelDon, description)
+        description = 'create don%d' % self.donNum
+        command = CommandCreate(self.makeLabelDon, self, description)
         self.undoStack.push(command)
-#############
-
-# sample code
-class CommandCreate(QUndoCommand):
-
-    def __init__(self, makeDon, description):
-        super(CommandCreate, self).__init__(description)
-        self.makeDon = makeDon  # function
-
-    def redo(self):
-        don = self.makeDon()
-        global donNum
-        global donList
-        don.setObjectName('don%d' % donNum)
-        don.move(donNum*don.width()//10, 0)
-        donList.append(don)
-        donNum += 1
-
-    def undo(self):
-        global donNum
-        global donList
-        don = donList.pop()
-        don.deleteLater()
-        donNum -= 1
 #############
 
 if __name__ == "__main__":
