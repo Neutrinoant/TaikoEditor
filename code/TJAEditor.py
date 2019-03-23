@@ -40,8 +40,6 @@ class MainWindow(QMainWindow, form_class):
 # sample code
         self.push_create.clicked.connect(self.push_create_clicked)
         self.undoStack = QUndoStack(self)
-        self.push_redo.clicked.connect(self.undoStack.redo)
-        self.push_undo.clicked.connect(self.undoStack.undo)
         self.donList = []
         self.donNum = 0
 #############
