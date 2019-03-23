@@ -15,15 +15,29 @@ class NoteLabel(QLabel):
         self.note=Note
 
     def NoteClicked(self,event):
+        if self.note.noteParam in [0,8]:
+            return
+        self.changeNote((self.note.noteParam)%4+1)
+
+    def changeNote(self,noteIdx):
         from TJAEditor import noteImageList
-        newImageIdx=(self.note.noteParam)%4+1 
-        print(newImageIdx)
-        newImage=QPixmap(noteImageList[ newImageIdx ]) #1-2-3-4 가 돌아간다
-        self.note.label.setPixmap(newImage)
-        self.note.label.show()
-        self.note.noteParam=newImageIdx
-
-
+        newImage=QPixmap(noteImageList[ noteIdx ]) #1-2-3-4 가 돌아간다
+        if noteIdx>0 and noteIdx!=8:
+            beatHeight = self.parentWidget().layout().itemAt(0).widget().height()
+            beatSize=[beatHeight, beatHeight]
+            if noteIdx in [1,2]:
+                newImage = newImage.scaled(beatSize[0]//3, beatSize[1]//3, transformMode=Qt.SmoothTransformation)
+            elif noteIdx in [3,4]:
+                newImage = newImage.scaled(beatSize[0]//2, beatSize[1]//2, transformMode=Qt.SmoothTransformation)
+            # elif note==7:
+            #     newImage = newImage.scaled(1, beatSize[1]//3, transformMode=Qt.SmoothTransformation,\
+            #                                 aspectRatioMode=Qt.KeepAspectRatioByExpanding)
+            self.move(self.x()+self.width()//2, self.y()+self.height()//2)
+            self.note.noteParam=noteIdx
+            self.setPixmap(newImage)
+            self.setFixedSize(newImage.width(), newImage.height())
+            self.move(self.x()-self.width()//2, self.y()-self.height()//2)
+            self.show()
 
     #start: left-top of first note, End: left-top of last note
     def setRenda(self,rendaStart,rendaEnd):
